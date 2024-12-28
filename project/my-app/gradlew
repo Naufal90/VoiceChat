@@ -1,0 +1,13 @@
+#!/bin/bash
+set -e
+
+GRADLE_VERSION=8.12
+WRAPPER_JAR=gradle/wrapper/gradle-wrapper.jar
+WRAPPER_PROPERTIES=gradle/wrapper/gradle-wrapper.properties
+
+if [ ! -f "$WRAPPER_JAR" ]; then
+  echo "Gradle wrapper jar not found. Please run 'gradle wrapper' first."
+  exit 1
+fi
+
+exec java -cp "$WRAPPER_JAR" org.gradle.wrapper.GradleWrapperMain "$@"
