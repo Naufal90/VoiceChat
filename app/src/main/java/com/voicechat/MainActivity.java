@@ -1,28 +1,24 @@
 package com.voicechat;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
-import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int SAMPLE_RATE = 16000;
-    private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
-
+    private static final int SAMPLE_RATE = 44100; // Sample rate untuk audio
+    private static final int BUFFER_SIZE = 1024; // Ukuran buffer
     private AudioRecord recorder;
     private AudioTrack player;
     private boolean isRecording = false;
+    private Thread recordingThread;
 
     private Button btnStartRecording;
     private Button btnStopRecording;
@@ -32,108 +28,90 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Inisialisasi tombol
+        // Memastikan izin mikrofon telah diberikan
+        // Memeriksa izin harus dilakukan sebelumnya (di AndroidManifest.xml)
+
         btnStartRecording = findViewById(R.id.btnStartRecording);
         btnStopRecording = findViewById(R.id.btnStopRecording);
 
-        // Memeriksa izin untuk rekaman audio
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.RECORD_AUDIO},
-                    REQUEST_RECORD_AUDIO_PERMISSION);
-        }
-
-        // Listener untuk tombol mulai rekaman
-        btnStartRecording.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startRecording();
-                btnStartRecording.setEnabled(false); // Menonaktifkan tombol mulai rekaman setelah ditekan
-                btnStopRecording.setEnabled(true); // Mengaktifkan tombol berhenti rekaman
-            }
-        });
-
-        // Listener untuk tombol berhenti rekaman
-        btnStopRecording.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                stopRecording();
-                btnStartRecording.setEnabled(true); // Mengaktifkan tombol mulai rekaman
-                btnStopRecording.setEnabled(false); // Menonaktifkan tombol berhenti rekaman
-            }
-        });
+        btnStartRecording.setOnClickListener(v -> startRecording());
+        btnStopRecording.setOnClickListener(v -> stopRecording());
     }
 
-    // Menangani izin yang diminta
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_RECORD_AUDIO_PERMISSION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Jika izin diberikan, mulai rekaman
-                startRecording();
-            } else {
-                // Tampilkan pesan jika izin ditolak
-                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    // Memulai proses rekaman
     private void startRecording() {
-        int bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
-        recorder = new AudioRecord(MediaRecorder.AudioSource.MIC, SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO,
-                AudioFormat.ENCODING_PCM_16BIT, bufferSize);
+        if (isRecording) return;
 
-        if (recorder.getState() == AudioRecord.STATE_INITIALIZED) {
-            recorder.startRecording();
-            isRecording = true;
-            Toast.makeText(this, "Recording started", Toast.LENGTH_SHORT).show();
+        recorder = new AudioRecord(
+                MediaRecorder.AudioSource.MIC,
+                SAMPLE_RATE,
+                AudioFormat.CHANNEL_IN_MONO,
+                AudioFormat.ENCODING_PCM_16BIT,
+                BUFFER_SIZE);
 
-            // Rekam suara di thread terpisah
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    byte[] audioBuffer = new byte[bufferSize];
-                    while (isRecording) {
-                        int read = recorder.read(audioBuffer, 0, audioBuffer.length);
-                        if (read > 0) {
-                            // Kirim data audio atau lakukan pemrosesan lebih lanjut
-                            // Untuk saat ini, kita akan langsung memainkan audio
-                            playAudio(audioBuffer, read);
-                        }
-                    }
-                }
-            }).start();
-        } else {
-            Toast.makeText(this, "Failed to initialize AudioRecord", Toast.LENGTH_SHORT).show();
+        if (recorder.getState() != AudioRecord.STATE_INITIALIZED) {
+            Log.e("AudioRecord", "Failed to initialize AudioRecord.");
+            return;
         }
-    }
 
-    // Menghentikan rekaman
-    private void stopRecording() {
-        if (recorder != null) {
-            recorder.stop();
-            recorder.release();
-            isRecording = false;
-            Toast.makeText(this, "Recording stopped", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    // Memutar audio yang direkam
-    private void playAudio(byte[] audioData, int length) {
+        // Inisialisasi AudioTrack untuk memutar suara yang diterima
         int bufferSize = AudioTrack.getMinBufferSize(SAMPLE_RATE, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT);
-        player = new AudioTrack(AudioManager.STREAM_MUSIC, SAMPLE_RATE, AudioFormat.CHANNEL_OUT_MONO,
-                AudioFormat.ENCODING_PCM_16BIT, bufferSize, AudioTrack.MODE_STREAM);
 
+        if (bufferSize == AudioTrack.ERROR_BAD_VALUE || bufferSize == AudioTrack.ERROR) {
+            Log.e("AudioTrack", "Invalid buffer size.");
+            return;
+        }
+
+        player = new AudioTrack(
+                AudioManager.STREAM_MUSIC,
+                SAMPLE_RATE,
+                AudioFormat.CHANNEL_OUT_MONO,
+                AudioFormat.ENCODING_PCM_16BIT,
+                bufferSize,
+                AudioTrack.MODE_STREAM);
+
+        if (player.getState() != AudioTrack.STATE_INITIALIZED) {
+            Log.e("AudioTrack", "Failed to initialize AudioTrack.");
+            return;
+        }
+
+        recorder.startRecording();
         player.play();
-        player.write(audioData, 0, length);
+
+        isRecording = true;
+
+        // Thread untuk membaca data dari mikrofon dan memainkannya melalui AudioTrack
+        recordingThread = new Thread(() -> {
+            byte[] audioBuffer = new byte[BUFFER_SIZE];
+            while (isRecording) {
+                int readResult = recorder.read(audioBuffer, 0, audioBuffer.length);
+                if (readResult != AudioRecord.ERROR_INVALID_OPERATION) {
+                    player.write(audioBuffer, 0, readResult);
+                }
+            }
+        });
+        recordingThread.start();
     }
 
-    // Menambahkan tombol atau logika lain untuk menghentikan rekaman jika diperlukan
+    private void stopRecording() {
+        if (!isRecording) return;
+
+        isRecording = false;
+
+        // Hentikan rekaman dan pemutaran
+        recorder.stop();
+        player.stop();
+
+        // Bersihkan sumber daya
+        recorder.release();
+        player.release();
+        recordingThread = null;
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        stopRecording(); // Pastikan rekaman dihentikan ketika aktivitas dihancurkan
+        if (isRecording) {
+            stopRecording();
+        }
     }
 }
