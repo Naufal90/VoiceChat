@@ -5,52 +5,40 @@ on:
     branches:
       - main
   pull_request:
-    branches:
-      - main
 
 jobs:
   build:
-    name: Build Android App
     runs-on: ubuntu-latest
 
     steps:
-    # Checkout repository
-    - name: Checkout Code
+    # 1. Checkout source code dari repository
+    - name: Checkout code
       uses: actions/checkout@v3
 
-    # Set up JDK
-    - name: Set up JDK 17
+    # 2. Setup Java JDK 17
+    - name: Setup JDK
       uses: actions/setup-java@v3
       with:
         distribution: 'temurin'
         java-version: '17'
 
-    # Set up Android SDK
-    - name: Set up Android SDK
+    # 3. Setup Android SDK
+    - name: Setup Android SDK
       uses: android-actions/setup-android@v2
       with:
-        java-version: '17'
-        sdk-version: 'commandlinetools-9123335_latest'
-        components: 'platform-tools, build-tools;33.0.2, platforms;android-33'
+        api-level: 33
+        build-tools: 33.0.2
 
-    # Cache Gradle dependencies
-    - name: Cache Gradle dependencies
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/.gradle/caches
-          ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle
+    # 4. Build APK
+    - name: Build APK
+      run: |
+        cd voicechat # Ganti dengan nama direktori proyek kamu jika berbeda
+        chmod +x ./gradlew # Pastikan gradlew memiliki izin eksekusi
+        ./gradlew assembleDebug
 
-    # Build the app
-    - name: Build with Gradle
-      run: ./gradlew assembleDebug
-
-    # Archive APK
+    # 5. Upload APK sebagai artifact
     - name: Upload APK
       uses: actions/upload-artifact@v3
       with:
         name: app-debug.apk
-        path: app/build/outputs/apk/debug/app-debug.apk
+        path: voicechat/app/build/outputs/apk/debug/app-debug.apk # Ganti sesuai struktur proyek kamu
