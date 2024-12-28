@@ -1,3 +1,0 @@
-@echo off
-set BASE_DIR=%~dp0
-java -Duser.home=%BASE_DIR% -jar %BASE_DIR%gradle/wrapper/gradle-wrapper.jar %*
