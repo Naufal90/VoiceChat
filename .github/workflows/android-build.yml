@@ -19,7 +19,10 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: '17'
-          distribution: 'temurin'  # Gunakan temurin sebagai distribusi JDK
+          distribution: 'temurin'
+
+      - name: Give gradlew execute permission
+        run: chmod +x ./gradlew
 
       - name: Build with Gradle
         run: ./gradlew build
