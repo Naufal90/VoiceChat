@@ -15,6 +15,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int SAMPLE_RATE = 44100; // Sample rate untuk audio
@@ -27,49 +31,52 @@ public class MainActivity extends AppCompatActivity {
     private Button btnStartRecording;
     private Button btnStopRecording;
     private RadioGroup modeSelection;
+    private AdView adView; // Untuk iklan banner
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Inisialisasi iklan AdMob
+        MobileAds.initialize(this, initializationStatus -> {});
+        adView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
+
+        // Memastikan izin mikrofon telah diberikan
+        // Memeriksa izin harus dilakukan sebelumnya (di AndroidManifest.xml)
+
         btnStartRecording = findViewById(R.id.btnStartRecording);
         btnStopRecording = findViewById(R.id.btnStopRecording);
         modeSelection = findViewById(R.id.modeSelection);
 
-        // Set default button states
-        btnStartRecording.setEnabled(true);
-        btnStopRecording.setEnabled(false);
+        btnStartRecording.setOnClickListener(v -> startRecording());
+        btnStopRecording.setOnClickListener(v -> stopRecording());
 
-        // Mode Selection Listener
         modeSelection.setOnCheckedChangeListener((group, checkedId) -> {
-            String mode = "";
             switch (checkedId) {
                 case R.id.offlineMode:
-                    mode = "Offline Mode";
+                    showToast("Offline Mode");
                     break;
                 case R.id.tunnelMode:
-                    mode = "Tunnel Mode";
+                    showToast("Tunnel Mode");
                     break;
                 case R.id.pluginMode:
-                    mode = "Plugin Mode";
+                    showToast("Plugin Mode");
                     break;
                 case R.id.onlineMode:
-                    mode = "Online Mode";
+                    showToast("Online Mode");
                     break;
                 case R.id.vpnMode:
-                    mode = "VPN Mode";
+                    showToast("VPN Mode");
                     break;
             }
-            // Show Toast when mode is selected
-            Toast.makeText(getApplicationContext(), mode + " Selected", Toast.LENGTH_SHORT).show();
         });
+    }
 
-        // Start Recording Button Listener
-        btnStartRecording.setOnClickListener(v -> startRecording());
-
-        // Stop Recording Button Listener
-        btnStopRecording.setOnClickListener(v -> stopRecording());
+    private void showToast(String message) {
+        Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
     }
 
     private void startRecording() {
@@ -124,13 +131,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         recordingThread.start();
-
-        // Show Toast when Recording Starts
-        Toast.makeText(getApplicationContext(), "Recording Started", Toast.LENGTH_SHORT).show();
-
-        // Disable Start Recording and Enable Stop Recording
-        btnStartRecording.setEnabled(false);
-        btnStopRecording.setEnabled(true);
     }
 
     private void stopRecording() {
@@ -146,13 +146,6 @@ public class MainActivity extends AppCompatActivity {
         recorder.release();
         player.release();
         recordingThread = null;
-
-        // Show Toast when Recording Stops
-        Toast.makeText(getApplicationContext(), "Recording Stopped", Toast.LENGTH_SHORT).show();
-
-        // Disable Stop Recording and Enable Start Recording
-        btnStopRecording.setEnabled(false);
-        btnStartRecording.setEnabled(true);
     }
 
     @Override
