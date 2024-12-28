@@ -4,6 +4,7 @@ import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.media.AudioTrack;
+import android.media.AudioManager;
 
 public class AudioManager {
 
