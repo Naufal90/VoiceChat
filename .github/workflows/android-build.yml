@@ -19,7 +19,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: '17'
-          distribution: 'adoptopenjdk'  # Tambahkan distribusi JDK
+          distribution: 'temurin'  # Gunakan temurin sebagai distribusi JDK
 
       - name: Build with Gradle
         run: ./gradlew build
