@@ -9,6 +9,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -23,19 +26,49 @@ public class MainActivity extends AppCompatActivity {
 
     private Button btnStartRecording;
     private Button btnStopRecording;
+    private RadioGroup modeSelection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Memastikan izin mikrofon telah diberikan
-        // Memeriksa izin harus dilakukan sebelumnya (di AndroidManifest.xml)
-
         btnStartRecording = findViewById(R.id.btnStartRecording);
         btnStopRecording = findViewById(R.id.btnStopRecording);
+        modeSelection = findViewById(R.id.modeSelection);
 
+        // Set default button states
+        btnStartRecording.setEnabled(true);
+        btnStopRecording.setEnabled(false);
+
+        // Mode Selection Listener
+        modeSelection.setOnCheckedChangeListener((group, checkedId) -> {
+            String mode = "";
+            switch (checkedId) {
+                case R.id.offlineMode:
+                    mode = "Offline Mode";
+                    break;
+                case R.id.tunnelMode:
+                    mode = "Tunnel Mode";
+                    break;
+                case R.id.pluginMode:
+                    mode = "Plugin Mode";
+                    break;
+                case R.id.onlineMode:
+                    mode = "Online Mode";
+                    break;
+                case R.id.vpnMode:
+                    mode = "VPN Mode";
+                    break;
+            }
+            // Show Toast when mode is selected
+            Toast.makeText(getApplicationContext(), mode + " Selected", Toast.LENGTH_SHORT).show();
+        });
+
+        // Start Recording Button Listener
         btnStartRecording.setOnClickListener(v -> startRecording());
+
+        // Stop Recording Button Listener
         btnStopRecording.setOnClickListener(v -> stopRecording());
     }
 
@@ -91,6 +124,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         recordingThread.start();
+
+        // Show Toast when Recording Starts
+        Toast.makeText(getApplicationContext(), "Recording Started", Toast.LENGTH_SHORT).show();
+
+        // Disable Start Recording and Enable Stop Recording
+        btnStartRecording.setEnabled(false);
+        btnStopRecording.setEnabled(true);
     }
 
     private void stopRecording() {
@@ -106,6 +146,13 @@ public class MainActivity extends AppCompatActivity {
         recorder.release();
         player.release();
         recordingThread = null;
+
+        // Show Toast when Recording Stops
+        Toast.makeText(getApplicationContext(), "Recording Stopped", Toast.LENGTH_SHORT).show();
+
+        // Disable Stop Recording and Enable Start Recording
+        btnStopRecording.setEnabled(false);
+        btnStartRecording.setEnabled(true);
     }
 
     @Override
