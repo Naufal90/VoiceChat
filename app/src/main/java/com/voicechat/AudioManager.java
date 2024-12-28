@@ -4,9 +4,9 @@ import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.media.AudioTrack;
-import android.media.AudioManager;
+import android.media.AudioManager;  // Impor ini tetap dipertahankan karena digunakan oleh Android SDK
 
-public class AudioManager {
+public class MyAudioManager {  // Ganti nama kelas di sini
 
     private static final int SAMPLE_RATE = 16000;  // Contoh sample rate untuk audio
     private AudioRecord recorder;
