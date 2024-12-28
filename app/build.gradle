@@ -24,4 +24,6 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.4.0'
     // Tambahkan dependensi lain yang diperlukan
     implementation 'com.google.android.material:material:1.4.0' // Sesuaikan versi jika diperlukan
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    // Tambahkan dependensi lainnya sesuai kebutuhan
 }
