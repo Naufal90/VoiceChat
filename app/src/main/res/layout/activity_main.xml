@@ -1,55 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@android:color/white">
 
+    <!-- Title/Text -->
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Voice Chat App"
+        android:textSize="24sp"
+        android:textColor="@android:color/black"
+        android:gravity="center"
+        android:padding="10dp"
+        android:textStyle="bold"/>
+
+    <!-- Mode Selection Group -->
     <RadioGroup
         android:id="@+id/modeSelection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <Button
-    android:id="@+id/btnStartRecording"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Start Recording" />
-
-<Button
-    android:id="@+id/btnStopRecording"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Stop Recording" />
+        android:orientation="vertical"
+        android:paddingTop="10dp">
 
         <RadioButton
             android:id="@+id/offlineMode"
             android:text="Offline Mode"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:padding="5dp"/>
 
         <RadioButton
             android:id="@+id/tunnelMode"
             android:text="Tunnel Mode"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:padding="5dp"/>
 
         <RadioButton
             android:id="@+id/pluginMode"
             android:text="Plugin Mode"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:padding="5dp"/>
 
         <RadioButton
             android:id="@+id/onlineMode"
             android:text="Online Mode"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:padding="5dp"/>
 
         <RadioButton
             android:id="@+id/vpnMode"
             android:text="VPN Mode"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:padding="5dp"/>
     </RadioGroup>
+
+    <!-- Start and Stop Recording Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingTop="20dp">
+
+        <Button
+            android:id="@+id/btnStartRecording"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start Recording"
+            android:textColor="@android:color/white"
+            android:background="@color/colorPrimary"
+            android:layout_marginEnd="10dp"/>
+
+        <Button
+            android:id="@+id/btnStopRecording"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop Recording"
+            android:textColor="@android:color/white"
+            android:background="@color/colorAccent"/>
+    </LinearLayout>
+
+    <!-- Footer: App Info and Update -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingTop="20dp">
+
+        <TextView
+            android:id="@+id/appInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="App Version: 1.0"
+            android:textSize="16sp"
+            android:textColor="@android:color/darker_gray"/>
+
+        <TextView
+            android:id="@+id/updateInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Last Update: December 2024"
+            android:textSize="14sp"
+            android:textColor="@android:color/darker_gray"/>
+    </LinearLayout>
+
+    <!-- Banner Ad (optional, at bottom) -->
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="10dp"
+        app:adSize="BANNER"
+        app:adUnitId="@string/admob_banner_id" />
+
 </LinearLayout>
