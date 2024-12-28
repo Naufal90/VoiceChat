@@ -10,6 +10,18 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <Button
+    android:id="@+id/btnStartRecording"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Start Recording" />
+
+<Button
+    android:id="@+id/btnStopRecording"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Stop Recording" />
+
         <RadioButton
             android:id="@+id/offlineMode"
             android:text="Offline Mode"
