@@ -1,0 +1,30 @@
+name: Build Android App
+
+on:
+  push:
+    branches:
+      - main  # Jalankan build saat ada perubahan di branch main
+  pull_request:
+    branches:
+      - main  # Jalankan build saat ada PR ke branch main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v2
+      with:
+        java-version: '17'
+
+    - name: Set up Android SDK
+      uses: reactivecircus/android-sdk-manager-action@v2
+      with:
+        sdk-version: 'commandlinetools-linux-8512546_latest'
+
+    - name: Build Debug APK
+      run: ./gradlew assembleDebug
