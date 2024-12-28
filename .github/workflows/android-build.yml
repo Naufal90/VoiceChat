@@ -1,30 +1,56 @@
-name: Build Android App
+name: Android Build
 
 on:
   push:
     branches:
-      - main  # Jalankan build saat ada perubahan di branch main
+      - main
   pull_request:
     branches:
-      - main  # Jalankan build saat ada PR ke branch main
+      - main
 
 jobs:
   build:
+    name: Build Android App
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+    # Checkout repository
+    - name: Checkout Code
+      uses: actions/checkout@v3
 
+    # Set up JDK
     - name: Set up JDK 17
-      uses: actions/setup-java@v2
+      uses: actions/setup-java@v3
       with:
+        distribution: 'temurin'
         java-version: '17'
 
+    # Set up Android SDK
     - name: Set up Android SDK
-      uses: reactivecircus/android-sdk-manager-action@v2
+      uses: android-actions/setup-android@v2
       with:
-        sdk-version: 'commandlinetools-linux-8512546_latest'
+        java-version: '17'
+        sdk-version: 'commandlinetools-9123335_latest'
+        components: 'platform-tools, build-tools;33.0.2, platforms;android-33'
 
-    - name: Build Debug APK
+    # Cache Gradle dependencies
+    - name: Cache Gradle dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle
+
+    # Build the app
+    - name: Build with Gradle
       run: ./gradlew assembleDebug
+
+    # Archive APK
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: app-debug.apk
+        path: app/build/outputs/apk/debug/app-debug.apk
