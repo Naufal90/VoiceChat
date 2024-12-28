@@ -1,14 +1,3 @@
 @echo off
-rem gradlew - Gradle wrapper script for Windows
-
-set DIR=%~dp0
-set DISTRIBUTION_URL=https\://services.gradle.org/distributions/gradle-8.12-all.zip
-set GRADLE_HOME=%DIR%gradle
-
-if not exist "%GRADLE_HOME%" (
-  echo Downloading Gradle distribution...
-  curl -L %DISTRIBUTION_URL% -o gradle.zip
-  powershell -Command "Expand-Archive -Path gradle.zip -DestinationPath %DIR%"
-)
-
-"%GRADLE_HOME%\bin\gradle" %*
+set BASE_DIR=%~dp0
+java -Duser.home=%BASE_DIR% -jar %BASE_DIR%gradle/wrapper/gradle-wrapper.jar %*
