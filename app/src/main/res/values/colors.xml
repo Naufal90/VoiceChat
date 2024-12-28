@@ -3,4 +3,8 @@
     <color name="purple_500">#6200EE</color>
     <color name="purple_700">#3700B3</color>
     <color name="teal_200">#03DAC5</color>
+
+    <!-- Tambahkan warna yang digunakan di tema -->
+    <color name="colorPrimary">#6200EE</color>  <!-- Warna utama -->
+    <color name="colorAccent">#03DAC5</color>   <!-- Warna aksen -->
 </resources>
