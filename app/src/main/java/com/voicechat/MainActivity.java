@@ -2,6 +2,7 @@ package com.voicechat;
 
 import android.media.AudioFormat;
 import android.media.AudioManager;
+import android.media.MediaRecorder;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.os.Bundle;
