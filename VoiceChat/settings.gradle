@@ -1,6 +1,0 @@
-// File: settings.gradle
-
-rootProject.name = "Voice-Chat-App"
-
-// Menambahkan submodul jika ada (misalnya :app)
-include ':app'
