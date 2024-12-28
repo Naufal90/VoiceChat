@@ -16,7 +16,7 @@
         android:label="@string/app_name"
         android:theme="@style/Theme.VoiceChat"
         android:name="com.google.android.gms.ads.APPLICATION_ID"
-        android:value="ca-app-pub-xxxxxxxxxxxxxxxx~yyyyyyyyyy" />
+        android:value="ca-app-pub-2273884404590175/8293148940" />
         
         <activity
             android:name=".MainActivity"
