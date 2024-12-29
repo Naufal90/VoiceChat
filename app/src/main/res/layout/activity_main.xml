@@ -36,24 +36,8 @@
             android:padding="5dp"/>
 
         <RadioButton
-            android:id="@+id/tunnelMode"
-            android:text="Tunnel Mode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
-            android:padding="5dp"/>
-
-        <RadioButton
             android:id="@+id/pluginMode"
             android:text="Plugin Mode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
-            android:padding="5dp"/>
-
-        <RadioButton
-            android:id="@+id/onlineMode"
-            android:text="Online Mode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
