@@ -1,4 +1,4 @@
-package com.example.voiceapp;
+package com.voicechat;
 
 import android.content.Context;
 import android.os.AsyncTask;
