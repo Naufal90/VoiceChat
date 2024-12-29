@@ -61,7 +61,7 @@
         android:paddingTop="20dp">
 
         <Button
-            android:id="@+id/btnStartRecording"
+            android:id="@+id/recordButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Start Recording"
@@ -70,13 +70,80 @@
             android:layout_marginEnd="10dp"/>
 
         <Button
-            android:id="@+id/btnStopRecording"
+            android:id="@+id/stopRecordButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Stop Recording"
             android:textColor="@android:color/white"
             android:background="@color/colorAccent"/>
     </LinearLayout>
+
+    <!-- Play and Stop Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingTop="20dp">
+
+        <Button
+            android:id="@+id/playButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Play"
+            android:textColor="@android:color/white"
+            android:background="@color/colorPrimary"
+            android:layout_marginEnd="10dp"/>
+
+        <Button
+            android:id="@+id/stopPlayButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop Playing"
+            android:textColor="@android:color/white"
+            android:background="@color/colorAccent"/>
+    </LinearLayout>
+
+    <!-- Send Button -->
+    <Button
+        android:id="@+id/sendButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send"
+        android:textColor="@android:color/white"
+        android:background="@color/colorPrimary"
+        android:layout_marginTop="20dp"/>
+
+    <!-- Start Hotspot Button -->
+    <Button
+        android:id="@+id/startHotspotButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start Hotspot"
+        android:textColor="@android:color/white"
+        android:background="@color/colorPrimary"
+        android:layout_marginTop="20dp"/>
+
+    <!-- Connect Button -->
+    <Button
+        android:id="@+id/connectButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Connect"
+        android:textColor="@android:color/white"
+        android:background="@color/colorAccent"
+        android:layout_marginTop="20dp"/>
+
+    <!-- Command EditText -->
+    <EditText
+        android:id="@+id/commandEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Command"
+        android:textColor="@android:color/black"
+        android:background="@android:color/white"
+        android:padding="10dp"
+        android:layout_marginTop="20dp"/>
 
     <!-- Footer: App Info and Update -->
     <LinearLayout
@@ -105,10 +172,10 @@
 
     <!-- Banner Ad (optional, at bottom) -->
     <com.google.android.gms.ads.AdView
-        android:id="@+id/adView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        ads:adSize="BANNER"
-        ads:adUnitId="ca-app-pub-2273884404590175~8177598870" /> <!-- Pastikan ID Unit Iklan yang benar -->
+    android:id="@+id/adView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    ads:adSize="BANNER"
+    ads:adUnitId="ca-app-pub-2273884404590175~8177598870" 
+    android:layout_gravity="bottom" /> <!-- Pastikan ID Unit Iklan yang benar -->
 </LinearLayout>
