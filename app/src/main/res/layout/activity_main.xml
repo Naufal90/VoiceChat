@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"  <!-- Tambahkan namespace ads -->
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -126,6 +127,5 @@
         android:layout_alignParentBottom="true"
         android:layout_marginTop="10dp"
         ads:adSize="BANNER"
-        ads:adUnitId="ca-app-pub-2273884404590175~8177598870" />
-
+        ads:adUnitId="ca-app-pub-2273884404590175~8177598870" /> <!-- Pastikan ID Unit Iklan yang benar -->
 </LinearLayout>
