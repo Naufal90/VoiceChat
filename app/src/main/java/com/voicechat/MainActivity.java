@@ -106,4 +106,4 @@ public class MainActivity extends AppCompatActivity {
 
         // Tombol untuk menghubungkan ke hotspot
         connectButton.setOnClickListener(v -> {
-            String hotspotSSID = "Player
+            String hotspotSSID = "Player";
