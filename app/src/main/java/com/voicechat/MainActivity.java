@@ -28,6 +28,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 
+import okhttp3.*;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -65,7 +66,51 @@ public class MainActivity extends AppCompatActivity {
         btnStopRecording = findViewById(R.id.btnStopRecording);
         modeSelection = findViewById(R.id.modeSelection);
 
+        public class WebSocketClient {
+    private OkHttpClient client;
+    private WebSocket webSocket;
+
+    public WebSocketClient() {
         client = new OkHttpClient();
+    }
+
+    public void connect(String url) {
+        Request request = new Request.Builder().url(url).build();
+        webSocket = client.newWebSocket(request, new WebSocketListener() {
+            @Override
+            public void onOpen(WebSocket webSocket, Response response) {
+                System.out.println("Connected to " + url);
+            }
+
+            @Override
+            public void onMessage(WebSocket webSocket, String text) {
+                System.out.println("Message received: " + text);
+            }
+
+            @Override
+            public void onFailure(WebSocket webSocket, Throwable t, Response response) {
+                System.err.println("Error: " + t.getMessage());
+            }
+
+            @Override
+            public void onClosed(WebSocket webSocket, int code, String reason) {
+                System.out.println("Connection closed: " + reason);
+            }
+        });
+    }
+
+    public void sendMessage(String message) {
+        if (webSocket != null) {
+            webSocket.send(message);
+        }
+    }
+
+    public void close() {
+        if (webSocket != null) {
+            webSocket.close(1000, "Goodbye");
+        }
+    }
+        }
 
         btnStartRecording.setOnClickListener(v -> startRecording());
         btnStopRecording.setOnClickListener(v -> stopRecording());
