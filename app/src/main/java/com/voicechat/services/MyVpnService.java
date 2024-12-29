@@ -13,9 +13,9 @@ public class MyVpnService extends VpnService {
     public int onStartCommand(Intent intent, int flags, int startId) {
         // Konfigurasi VPN dan jalankan koneksi VPN
         Builder builder = new Builder();
-        builder.setSession("Minecraft Voice Chat VPN") // Nama sesi VPN
-               .addAddress("10.0.0.2", 24) // IP lokal
-               .addRoute("0.0.0.0", 0)  // Semua rute
+        builder.setSession("Minecraft Voice Chat VPN"); // Nama sesi VPN
+               .addAddress("10.0.0.2", 24); // IP lokal
+               .addRoute("0.0.0.0", 0);  // Semua rute
 
         // Jika kamu ingin menggunakan DNS khusus, bisa ditambahkan seperti ini
         builder.addDnsServer("8.8.8.8");
