@@ -106,4 +106,25 @@ public class MainActivity extends AppCompatActivity {
 
         // Tombol untuk menghubungkan ke hotspot
         connectButton.setOnClickListener(v -> {
-            String hotspotSSID = "Player";
+            String hotspotSSID = "Player"; // Anda bisa mengganti ini dengan SSID yang sesuai
+            // Tambahkan logika yang diperlukan untuk menghubungkan ke hotspot
+            // Misalnya, Anda bisa menambahkan kode untuk menghubungkan ke jaringan Wi-Fi tertentu di sini.
+            Toast.makeText(this, "Mencoba menghubungkan ke hotspot: " + hotspotSSID, Toast.LENGTH_SHORT).show();
+        });
+
+        // Tombol untuk login (misalnya untuk mode tertentu)
+        loginButton.setOnClickListener(v -> {
+            String username = usernameEditText.getText().toString();
+            String password = passwordEditText.getText().toString();
+            // Logika login di sini (misalnya validasi username dan password)
+            Toast.makeText(this, "Login berhasil: " + username, Toast.LENGTH_SHORT).show();
+        });
+
+        // Tombol untuk mengirim perintah
+        sendButton.setOnClickListener(v -> {
+            String command = commandEditText.getText().toString();
+            // Kirim perintah sesuai dengan logika aplikasi Anda
+            Toast.makeText(this, "Perintah dikirim: " + command, Toast.LENGTH_SHORT).show();
+        });
+    }
+}
