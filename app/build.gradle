@@ -28,5 +28,5 @@ dependencies {
     // Tambahkan dependensi lainnya sesuai kebutuhan
     implementation 'com.google.android.gms:play-services-ads:22.4.0' // Versi terbaru
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
-    implementation 'com.mojang:authlib-noui:1.4.0.2_tt600'
+    implementation 'com.immomo.cosmos.auth:authlib-noui:1.4.0.2_tt600'
 }
