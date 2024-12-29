@@ -3,7 +3,6 @@ package com.voicechat;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
-
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity {
     private OfflineMode offlineMode;
     private ClientMode clientMode;
+    private OnlineMode onlineMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +19,8 @@ public class MainActivity extends AppCompatActivity {
 
         offlineMode = new OfflineMode(this);
         clientMode = new ClientMode(this);
-pluginMode = new PluginMode(this);
+        pluginMode = new PluginMode(this);
+        onlineMode = new OnlineMode(this);
 
         Button startHotspotButton = findViewById(R.id.startHotspotButton);
         Button connectButton = findViewById(R.id.connectButton);
@@ -47,6 +48,23 @@ Button sendButton = findViewById(R.id.sendButton);
                 pluginMode.sendDataToPlugin(serverUrl, command);
             } else {
                 Toast.makeText(MainActivity.this, "Perintah tidak boleh kosong!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+EditText usernameEditText = findViewById(R.id.usernameEditText);
+        EditText passwordEditText = findViewById(R.id.passwordEditText);
+        Button loginButton = findViewById(R.id.loginButton);
+
+        // Ketika tombol login diklik
+        loginButton.setOnClickListener(v -> {
+            String username = usernameEditText.getText().toString();
+            String password = passwordEditText.getText().toString();
+
+            if (!username.isEmpty() && !password.isEmpty()) {
+                // Memanggil fungsi untuk autentikasi
+                onlineMode.authenticateAndPlay(username, password);
+            } else {
+                Toast.makeText(MainActivity.this, "Username dan password tidak boleh kosong!", Toast.LENGTH_SHORT).show();
             }
         });
     }
