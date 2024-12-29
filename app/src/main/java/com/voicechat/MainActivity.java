@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
     private OfflineMode offlineMode;
     private ClientMode clientMode;
     private PluginMode pluginMode;
-    private OnlineMode onlineMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
         connectButton = findViewById(R.id.connectButton);
         usernameEditText = findViewById(R.id.usernameEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
-        loginButton = findViewById(R.id.loginButton);
         commandEditText = findViewById(R.id.commandEditText);
         mAdView = findViewById(R.id.adView);
 
@@ -57,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
         offlineMode = new OfflineMode(this);
         clientMode = new ClientMode(this);
         pluginMode = new PluginMode(this);
-        onlineMode = new OnlineMode(this);
 
         // Menampilkan banner iklan
         AdRequest adRequest = new AdRequest.Builder().build();
@@ -65,11 +62,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Meminta izin saat aplikasi pertama kali dijalankan
         PermissionUtils.requestPermissions(this);
-
-        // Mengecek apakah perangkat terhubung ke internet
-        if (!NetworkUtils.isNetworkAvailable(this)) {
-            Toast.makeText(this, "Tidak ada koneksi internet!", Toast.LENGTH_SHORT).show();
-        }
 
         // Tombol untuk memulai perekaman
         recordButton.setOnClickListener(v -> {
@@ -110,14 +102,6 @@ public class MainActivity extends AppCompatActivity {
             // Tambahkan logika yang diperlukan untuk menghubungkan ke hotspot
             // Misalnya, Anda bisa menambahkan kode untuk menghubungkan ke jaringan Wi-Fi tertentu di sini.
             Toast.makeText(this, "Mencoba menghubungkan ke hotspot: " + hotspotSSID, Toast.LENGTH_SHORT).show();
-        });
-
-        // Tombol untuk login (misalnya untuk mode tertentu)
-        loginButton.setOnClickListener(v -> {
-            String username = usernameEditText.getText().toString();
-            String password = passwordEditText.getText().toString();
-            // Logika login di sini (misalnya validasi username dan password)
-            Toast.makeText(this, "Login berhasil: " + username, Toast.LENGTH_SHORT).show();
         });
 
         // Tombol untuk mengirim perintah
