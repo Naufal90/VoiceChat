@@ -1,4 +1,4 @@
-package com.voicechat
+package com.voicechat;
 
 import android.content.Context;
 import android.widget.Toast;
