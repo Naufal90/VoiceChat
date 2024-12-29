@@ -105,11 +105,10 @@
 
     <!-- Banner Ad (optional, at bottom) -->
     <com.google.android.gms.ads.AdView
-        android:id="@+id/adView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="10dp"
-        ads:adSize="BANNER"
-        ads:adUnitId="ca-app-pub-2273884404590175~8177598870" /> <!-- Pastikan ID Unit Iklan yang benar -->
+    android:id="@+id/adView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    ads:adSize="BANNER"
+    ads:adUnitId="ca-app-pub-2273884404590175~8177598870" 
+    android:layout_gravity="bottom" /> <!-- Pastikan ID Unit Iklan yang benar -->
 </LinearLayout>
