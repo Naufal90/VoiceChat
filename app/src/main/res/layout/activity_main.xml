@@ -125,7 +125,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="10dp"
-        android:adSize="BANNER"
-        android:adUnitId="ca-app-pub-2273884404590175/8293148940" />
+        ads:adSize="BANNER"
+        ads:adUnitId="ca-app-pub-2273884404590175/8293148940" />
 
 </LinearLayout>
