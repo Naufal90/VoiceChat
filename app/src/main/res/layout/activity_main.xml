@@ -7,6 +7,14 @@
     android:padding="16dp"
     android:background="@android:color/white">
 
+    <androidx.appcompat.widget.Toolbar
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:title="Voice Chat App"
+    android:background="?attr/colorPrimary"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
     <!-- Title/Text -->
     <TextView
         android:id="@+id/title"
