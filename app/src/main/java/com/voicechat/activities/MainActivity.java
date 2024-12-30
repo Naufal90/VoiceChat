@@ -148,17 +148,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
  }
-        try {
-            player = new MediaPlayer();
-            player.setDataSource(AUDIO_FILE_PATH);
-            player.prepare();
-            player.start();
-            showSuccessToast("Memutar audio");
-        } catch (IOException e) {
-            e.printStackTrace();
-            showErrorToast("Gagal memutar audio");
-        }
-    }
 
     private void stopPlaying() {
         if (player != null) {
