@@ -45,6 +45,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        != PackageManager.PERMISSION_GRANTED) {
+    ActivityCompat.requestPermissions(this,
+            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_RECORD_AUDIO);
+        }
+
         // Inisialisasi AdMob
         MobileAds.initialize(this, initializationStatus -> {});
 
@@ -158,6 +164,25 @@ public class MainActivity extends AppCompatActivity {
             recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
             recorder.setOutputFile(AUDIO_FILE_PATH);
             try {
+                File folder = new File("/storage/emulated/0/VoiceChat");
+if (!folder.exists()) {
+    folder.mkdirs();
+}
+File audioFile = new File(AUDIO_FILE_PATH);
+if (!audioFile.exists()) {
+    try {
+        audioFile.createNewFile();
+    } catch (IOException e) {
+        e.printStackTrace();
+        Toast.makeText(this, "Gagal membuat file audio", Toast.LENGTH_SHORT).show();
+        return;
+    }
+}
+                File audioFile = new File(AUDIO_FILE_PATH);
+if (!audioFile.exists()) {
+    Toast.makeText(this, "File audio tidak ditemukan", Toast.LENGTH_SHORT).show();
+    return;
+}
                 recorder.prepare();
                 recorder.start();
                 Toast.makeText(this, "Perekaman dimulai", Toast.LENGTH_SHORT).show();
