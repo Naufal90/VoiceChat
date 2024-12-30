@@ -96,6 +96,20 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+    if (requestCode == REQUEST_CODE_PERMISSIONS) {
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            // Izin diberikan, lanjutkan dengan aksi yang memerlukan izin (misal, memulai pemutaran audio)
+        } else {
+            // Izin ditolak, beri tahu pengguna
+            Toast.makeText(this, "Izin diperlukan untuk memutar audio", Toast.LENGTH_SHORT).show();
+        }
+    }
+}
+    
     private void startRecording() {
         try {
             File folder = new File("/storage/emulated/0/VoiceChat");
