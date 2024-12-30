@@ -134,7 +134,6 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "File audio tidak ditemukan", Toast.LENGTH_SHORT).show();
         return;
     }
-}
 
     if (player == null) {
         player = new MediaPlayer();
@@ -148,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Gagal memutar audio: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
-    }
+ }
         try {
             player = new MediaPlayer();
             player.setDataSource(AUDIO_FILE_PATH);
