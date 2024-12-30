@@ -5,7 +5,6 @@ import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -22,19 +21,15 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 
+import java.io.File;
+import java.io.IOException;
+
 public class MainActivity extends AppCompatActivity {
-    private static final String AUDIO_FILE_PATH = "/storage/emulated/0/VoiceChat/audio_file.3gp"; // Tentukan path file audio yang benar
-    private static final int REQUEST_CODE_RECORD_AUDIO = 1;
+    private static final String AUDIO_FILE_PATH = "/storage/emulated/0/VoiceChat/audio_file.3gp";
+    private static final int REQUEST_CODE_PERMISSIONS = 1;
 
-    private Button recordButton;
-    private Button stopRecordButton;
-    private Button playButton;
-    private Button stopPlayButton;
-    private Button sendButton;
-    private Button startHotspotButton;
-    private Button connectButton;
+    private Button recordButton, stopRecordButton, playButton, stopPlayButton, sendButton, startHotspotButton, connectButton;
     private EditText commandEditText;
-
     private AdView mAdView;
 
     private MediaRecorder recorder;
@@ -45,16 +40,24 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        != PackageManager.PERMISSION_GRANTED) {
-    ActivityCompat.requestPermissions(this,
-            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_RECORD_AUDIO);
-        }
+        // Memastikan semua izin telah diberikan
+        requestPermissions();
 
         // Inisialisasi AdMob
         MobileAds.initialize(this, initializationStatus -> {});
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
-        // Inisialisasi komponen UI
+        // Inisialisasi UI
+        initUI();
+
+        // Set toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+    }
+
+    private void initUI() {
         recordButton = findViewById(R.id.recordButton);
         stopRecordButton = findViewById(R.id.stopRecordButton);
         playButton = findViewById(R.id.playButton);
@@ -63,181 +66,139 @@ public class MainActivity extends AppCompatActivity {
         startHotspotButton = findViewById(R.id.startHotspotButton);
         connectButton = findViewById(R.id.connectButton);
         commandEditText = findViewById(R.id.commandEditText);
-        mAdView = findViewById(R.id.adView);
-        // Set the toolbar as the action bar
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        // Menampilkan banner iklan
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-
-        // Meminta izin saat aplikasi pertama kali dijalankan
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_CODE_RECORD_AUDIO);
-        }
-
-        // Tombol untuk memulai perekaman
         recordButton.setOnClickListener(v -> startRecording());
-
-        // Tombol untuk menghentikan perekaman
         stopRecordButton.setOnClickListener(v -> stopRecording());
-
-        // Tombol untuk memutar suara
         playButton.setOnClickListener(v -> startPlaying());
-
-        // Tombol untuk menghentikan pemutaran suara
         stopPlayButton.setOnClickListener(v -> stopPlaying());
-
-        // Tombol untuk mengirim perintah
-        sendButton.setOnClickListener(v -> {
-            String command = commandEditText.getText().toString();
-            Toast.makeText(this, "Perintah dikirim: " + command, Toast.LENGTH_SHORT).show();
-        });
-
-        // Tombol untuk memulai hotspot (ini hanya contoh, Anda perlu menambahkannya sesuai implementasi)
-        startHotspotButton.setOnClickListener(v -> {
-            // Implementasikan logika untuk memulai hotspot
-            Toast.makeText(this, "Hotspot dimulai", Toast.LENGTH_SHORT).show();
-        });
-
-        // Tombol untuk menghubungkan ke hotspot (implementasi sesuai dengan logika yang diinginkan)
-        connectButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Mencoba menghubungkan ke hotspot", Toast.LENGTH_SHORT).show();
-        });
+        sendButton.setOnClickListener(v -> sendCommand());
+        startHotspotButton.setOnClickListener(v -> startHotspot());
+        connectButton.setOnClickListener(v -> connectToHotspot());
     }
 
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate menu item dari XML
-        getMenuInflater().inflate(R.menu.menu_help, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
+    private void requestPermissions() {
+        String[] permissions = {
+                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+        };
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.item_help:
-                showHelp(); // Menampilkan cara menggunakan aplikasi
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (!hasPermissions(permissions)) {
+            ActivityCompat.requestPermissions(this, permissions, REQUEST_CODE_PERMISSIONS);
         }
     }
 
-    private void showHelp() {
-    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    builder.setTitle("Panduan Penggunaan Aplikasi")
-           .setMessage("Aplikasi Voice Chat menyediakan beberapa fitur untuk memudahkan komunikasi suara antar perangkat. Berikut adalah cara menggunakan aplikasi ini:\n\n" +
-                       "1. **Pilih Mode**: Pilih salah satu mode yang sesuai dengan kebutuhan Anda:\n" +
-                       "   - **Offline Mode**: Mode untuk menggunakan aplikasi tanpa koneksi internet (Wi-Fi atau data seluler). Cocok untuk penggunaan lokal antar perangkat.\n" +
-                       "   - **Plugin Mode**: Mode yang digunakan untuk menghubungkan aplikasi dengan plugin Minecraft. Cocok untuk berkomunikasi dengan pemain Minecraft menggunakan voice chat.\n" +
-                       "   - **VPN Mode**: Mode ini digunakan untuk koneksi aman menggunakan jaringan VPN. Berguna jika Anda ingin memastikan koneksi yang lebih aman antar perangkat.\n\n" +
-                       
-                       "2. **Mulai Perekaman Suara**: Tekan tombol **'Start Recording'** untuk mulai merekam suara Anda.\n" +
-                       "   - Setelah perekaman dimulai, Anda dapat berbicara dan suara Anda akan direkam.\n\n" +
-                       
-                       "3. **Hentikan Perekaman**: Tekan tombol **'Stop Recording'** untuk menghentikan perekaman suara Anda.\n" +
-                       "   - Suara yang telah direkam akan disimpan dan dapat diputar ulang.\n\n" +
-                       
-                       "4. **Putar Suara yang Terekam**: Tekan tombol **'Play'** untuk memutar suara yang telah direkam sebelumnya.\n" +
-                       "   - Jika Anda ingin menghentikan pemutaran suara, tekan tombol **'Stop'**.\n\n" +
-                       
-                       "5. **Hotspot dan Koneksi**: Anda bisa menggunakan tombol **'Start Hotspot'** untuk membuat hotspot pribadi (hanya jika perangkat Anda mendukungnya).\n" +
-                       "   - Tekan tombol **'Connect'** untuk menghubungkan perangkat lain ke hotspot yang telah dibuat.\n\n" +
-                       
-                       "6. **Mengirim Perintah**: Anda dapat menggunakan tombol **'Send'** untuk mengirim perintah yang Anda ketikkan di kolom teks. Perintah ini bisa digunakan untuk integrasi lebih lanjut dengan aplikasi atau server lainnya.\n\n" +
-                       
-                       "Semoga panduan ini membantu Anda dalam menggunakan aplikasi Voice Chat. Selamat mencoba!")
-           .setPositiveButton("OK", null)
-           .show();
+    private boolean hasPermissions(String[] permissions) {
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+        return true;
     }
-}
 
-    // Fungsi untuk memulai perekaman audio
     private void startRecording() {
-        if (recorder == null) {
+        try {
+            File folder = new File("/storage/emulated/0/VoiceChat");
+            if (!folder.exists() && !folder.mkdirs()) {
+                showErrorToast("Gagal membuat folder untuk menyimpan audio");
+                return;
+            }
+
             recorder = new MediaRecorder();
             recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
             recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
             recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
             recorder.setOutputFile(AUDIO_FILE_PATH);
-            try {
-                File folder = new File("/storage/emulated/0/VoiceChat");
-if (!folder.exists()) {
-    folder.mkdirs();
-}
-File audioFile = new File(AUDIO_FILE_PATH);
-if (!audioFile.exists()) {
-    try {
-        audioFile.createNewFile();
-    } catch (IOException e) {
-        e.printStackTrace();
-        Toast.makeText(this, "Gagal membuat file audio", Toast.LENGTH_SHORT).show();
-        return;
-    }
-}
-                File audioFile = new File(AUDIO_FILE_PATH);
-if (!audioFile.exists()) {
-    Toast.makeText(this, "File audio tidak ditemukan", Toast.LENGTH_SHORT).show();
-    return;
-}
-                recorder.prepare();
-                recorder.start();
-                Toast.makeText(this, "Perekaman dimulai", Toast.LENGTH_SHORT).show();
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(this, "Gagal memulai perekaman", Toast.LENGTH_SHORT).show();
-            }
+
+            recorder.prepare();
+            recorder.start();
+            showSuccessToast("Perekaman dimulai");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorToast("Gagal memulai perekaman");
         }
     }
 
-    // Fungsi untuk menghentikan perekaman audio
     private void stopRecording() {
         if (recorder != null) {
             recorder.stop();
             recorder.release();
             recorder = null;
-            Toast.makeText(this, "Perekaman dihentikan", Toast.LENGTH_SHORT).show();
+            showSuccessToast("Perekaman dihentikan");
         }
     }
 
-    // Fungsi untuk memutar audio
     private void startPlaying() {
-        if (player == null) {
+        try {
             player = new MediaPlayer();
-            try {
-                player.setDataSource(AUDIO_FILE_PATH);
-                player.prepare();
-                player.start();
-                Toast.makeText(this, "Memulai pemutaran audio", Toast.LENGTH_SHORT).show();
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(this, "Gagal memutar audio", Toast.LENGTH_SHORT).show();
-            }
+            player.setDataSource(AUDIO_FILE_PATH);
+            player.prepare();
+            player.start();
+            showSuccessToast("Memutar audio");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorToast("Gagal memutar audio");
         }
     }
 
-    // Fungsi untuk menghentikan pemutaran audio
     private void stopPlaying() {
         if (player != null) {
             player.stop();
             player.release();
             player = null;
-            Toast.makeText(this, "Pemutaran audio dihentikan", Toast.LENGTH_SHORT).show();
+            showSuccessToast("Pemutaran audio dihentikan");
         }
     }
 
-    // Menangani izin yang diminta oleh aplikasi
+    private void sendCommand() {
+        String command = commandEditText.getText().toString();
+        showSuccessToast("Perintah dikirim: " + command);
+    }
+
+    private void startHotspot() {
+        showSuccessToast("Hotspot dimulai (belum diimplementasikan)");
+    }
+
+    private void connectToHotspot() {
+        showSuccessToast("Menghubungkan ke hotspot (belum diimplementasikan)");
+    }
+
+    private void showSuccessToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void showErrorToast(String message) {
+        Toast.makeText(this, "Error: " + message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_help, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.item_help) {
+            showHelp();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void showHelp() {
+        new AlertDialog.Builder(this)
+                .setTitle("Panduan Penggunaan")
+                .setMessage("Cara menggunakan aplikasi ini dijelaskan di sini.")
+                .setPositiveButton("OK", null)
+                .show();
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == REQUEST_CODE_RECORD_AUDIO) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Izin diberikan, Anda dapat mulai merekam
-                Toast.makeText(this, "Izin diberikan", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Izin ditolak", Toast.LENGTH_SHORT).show();
+        if (requestCode == REQUEST_CODE_PERMISSIONS) {
+            if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                showErrorToast("Izin diperlukan untuk menjalankan aplikasi ini");
             }
         }
     }
