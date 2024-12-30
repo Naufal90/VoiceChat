@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 
 android {
     namespace 'com.voicechat'
-    compileSdkVersion 34  // Sesuaikan dengan versi SDK yang kamu pakai
+    compileSdkVersion 33  // Sesuaikan dengan versi SDK yang kamu pakai
 
     defaultConfig {
         applicationId "com.voicechat"
-        minSdkVersion 28
-        targetSdkVersion 34
+        minSdkVersion 21
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
     }
