@@ -101,11 +101,28 @@ public void onRequestPermissionsResult(int requestCode, String[] permissions, in
     super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
     if (requestCode == REQUEST_CODE_PERMISSIONS) {
-        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            // Izin diberikan, lanjutkan dengan aksi yang memerlukan izin (misal, memulai pemutaran audio)
+        boolean allPermissionsGranted = true;
+
+        // Cek semua izin yang diminta
+        for (int result : grantResults) {
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                allPermissionsGranted = false;
+                break;
+            }
+        }
+
+        if (allPermissionsGranted) {
+            // Jika semua izin diberikan, lanjutkan aksi yang memerlukan izin
+            startPlaying(); // Misalnya, memulai pemutaran audio
         } else {
-            // Izin ditolak, beri tahu pengguna
-            Toast.makeText(this, "Izin diperlukan untuk memutar audio", Toast.LENGTH_SHORT).show();
+            // Jika izin ditolak, beri tahu pengguna dan mungkin arahkan ke pengaturan
+            if (shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO) ||
+                shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                Toast.makeText(this, "Izin diperlukan untuk memutar audio", Toast.LENGTH_SHORT).show();
+            } else {
+                // Jika izin ditolak secara permanen, beri tahu pengguna untuk membuka pengaturan
+                Toast.makeText(this, "Izin ditolak secara permanen. Buka pengaturan untuk memberikan izin.", Toast.LENGTH_LONG).show();
+            }
         }
     }
 }
