@@ -12,6 +12,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.app.AlertDialog;
 
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiManager;
+import android.content.Context;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
