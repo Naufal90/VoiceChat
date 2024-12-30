@@ -175,8 +175,39 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startHotspot() {
-        showSuccessToast("Hotspot dimulai (belum diimplementasikan)");
+    WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+    if (wifiManager == null) {
+        Toast.makeText(this, "Wi-Fi tidak tersedia di perangkat ini", Toast.LENGTH_SHORT).show();
+        return;
     }
+
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+        // Android O ke atas (Menggunakan Soft AP Configuration)
+        WifiManager.LocalOnlyHotspotReservation[] hotspotReservation = new WifiManager.LocalOnlyHotspotReservation[1];
+        wifiManager.startLocalOnlyHotspot(new WifiManager.LocalOnlyHotspotCallback() {
+            @Override
+            public void onStarted(WifiManager.LocalOnlyHotspotReservation reservation) {
+                super.onStarted(reservation);
+                hotspotReservation[0] = reservation;
+                Toast.makeText(MainActivity.this, "Hotspot dimulai", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onStopped() {
+                super.onStopped();
+                Toast.makeText(MainActivity.this, "Hotspot dihentikan", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailed(int reason) {
+                super.onFailed(reason);
+                Toast.makeText(MainActivity.this, "Gagal memulai hotspot, kode: " + reason, Toast.LENGTH_SHORT).show();
+            }
+        }, null);
+    } else {
+        Toast.makeText(this, "Versi Android tidak mendukung fitur ini", Toast.LENGTH_SHORT).show();
+    }
+}
 
     private void connectToHotspot() {
         showSuccessToast("Menghubungkan ke hotspot (belum diimplementasikan)");
