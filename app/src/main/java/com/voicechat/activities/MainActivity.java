@@ -47,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
         // Memastikan semua izin telah diberikan
         requestPermissions();
 
+        // Mendapatkan instance Wifimanager
+        WifiManager wifiManager = (WifiManager) MainActivity.this.getSystemService(Context.WIFI_SERVICE);
+        
         // Inisialisasi AdMob
         MobileAds.initialize(this, initializationStatus -> {});
         mAdView = findViewById(R.id.adView);
