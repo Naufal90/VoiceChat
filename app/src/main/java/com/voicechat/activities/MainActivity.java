@@ -35,6 +35,7 @@ import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
     private static final String AUDIO_FILE_PATH = "/storage/emulated/0/VoiceChat/audio_file.3gp";
+    private static final String TAG = "VoiceChatApp";
     private static final int REQUEST_CODE_PERMISSIONS = 1;
 
     private Button recordButton, stopRecordButton, playButton, stopPlayButton, sendButton, startHotspotButton, connectButton;
@@ -52,9 +53,22 @@ public class MainActivity extends AppCompatActivity {
         // Memastikan semua izin telah diberikan
         requestPermissions();
 
-        // Mendapatkan instance Wifimanager
+        // Log untuk debugging
+        Log.d(TAG, "Aplikasi dimulai");
+
+        // Menulis log ke file
+        writeLogToFile("Aplikasi dimulai");
+
+       // Mendapatkan instance WifiManager
         WifiManager wifiManager = (WifiManager) MainActivity.this.getSystemService(Context.WIFI_SERVICE);
         
+        if (wifiManager != null) {
+            Log.d(TAG, "WifiManager berhasil diakses");
+            writeLogToFile("WifiManager berhasil diakses");
+        } else {
+            Log.d(TAG, "WifiManager tidak tersedia");
+            writeLogToFile("WifiManager tidak tersedia");
+            
         // Inisialisasi AdMob
         MobileAds.initialize(this, initializationStatus -> {});
         mAdView = findViewById(R.id.adView);
@@ -135,6 +149,32 @@ public void onRequestPermissionsResult(int requestCode, String[] permissions, in
                 // Jika izin ditolak secara permanen, beri tahu pengguna untuk membuka pengaturan
                 Toast.makeText(this, "Izin ditolak secara permanen. Buka pengaturan untuk memberikan izin.", Toast.LENGTH_LONG).show();
             }
+        }
+    }
+}
+
+        // Metode untuk menulis log ke file
+    private void writeLogToFile(String message) {
+        try {
+            // Mendapatkan folder VoiceChat di external storage
+            File logFolder = new File(getExternalFilesDir(null), "VoiceChat");
+            if (!logFolder.exists()) {
+                logFolder.mkdir();  // Membuat folder jika belum ada
+            }
+
+            // Membuat file log
+            File logFile = new File(logFolder, "app_log.txt");
+            
+            // Menulis log ke file
+            BufferedWriter writer = new BufferedWriter(new FileWriter(logFile, true));
+            String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+            writer.append(timestamp + " - " + message);
+            writer.newLine();
+            writer.close();
+
+            Log.d(TAG, "Log berhasil ditulis ke file");
+        } catch (IOException e) {
+            Log.e(TAG, "Gagal menulis log ke file", e);
         }
     }
 }
