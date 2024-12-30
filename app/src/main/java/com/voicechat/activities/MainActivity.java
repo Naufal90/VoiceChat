@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         stopPlayButton.setOnClickListener(v -> stopPlaying());
         sendButton.setOnClickListener(v -> sendCommand());
         startHotspotButton.setOnClickListener(v -> startHotspot());
-        connectButton.setOnClickListener(v -> connectToHotspot());
+        connectButton.setOnClickListener(v -> connectToHotspot("SSID_HOTSPOT", "PASSWORD_HOTSPOT"));
     }
 
     private void requestPermissions() {
@@ -209,9 +209,28 @@ public class MainActivity extends AppCompatActivity {
     }
 }
 
-    private void connectToHotspot() {
-        showSuccessToast("Menghubungkan ke hotspot (belum diimplementasikan)");
+    private void connectToHotspot(String ssid, String password) {
+    WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+    if (wifiManager == null) {
+        Toast.makeText(this, "Wi-Fi tidak tersedia di perangkat ini", Toast.LENGTH_SHORT).show();
+        return;
     }
+
+    WifiConfiguration wifiConfig = new WifiConfiguration();
+    wifiConfig.SSID = "\"" + ssid + "\"";
+    wifiConfig.preSharedKey = "\"" + password + "\"";
+
+    int netId = wifiManager.addNetwork(wifiConfig);
+    if (netId == -1) {
+        Toast.makeText(this, "Gagal menambahkan jaringan hotspot", Toast.LENGTH_SHORT).show();
+        return;
+    }
+
+    wifiManager.disconnect();
+    wifiManager.enableNetwork(netId, true);
+    wifiManager.reconnect();
+    Toast.makeText(this, "Berhasil menghubungkan ke hotspot", Toast.LENGTH_SHORT).show();
+}
 
     private void showSuccessToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
