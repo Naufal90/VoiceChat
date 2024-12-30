@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     private MediaRecorder recorder;
     private MediaPlayer player;
+}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
