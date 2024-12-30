@@ -129,7 +129,7 @@ public void onRequestPermissionsResult(int requestCode, String[] permissions, in
     
     private void startRecording() {
         try {
-            File folder = new File("/storage/emulated/0/VoiceChat");
+            File folder = new File(getExternalFilesDir(null), "VoiceChat");
             if (!folder.exists() && !folder.mkdirs()) {
                 showErrorToast("Gagal membuat folder untuk menyimpan audio");
                 return;
