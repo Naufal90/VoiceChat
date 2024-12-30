@@ -129,6 +129,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startPlaying() {
+        File audioFile = new File(AUDIO_FILE_PATH);
+    if (!audioFile.exists()) {
+        Toast.makeText(this, "File audio tidak ditemukan", Toast.LENGTH_SHORT).show();
+        return;
+    }
+
+    if (player == null) {
+        player = new MediaPlayer();
+        try {
+            player.setDataSource(AUDIO_FILE_PATH);
+            player.prepare();
+            player.start();
+            Toast.makeText(this, "Memutar audio", Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Gagal memutar audio: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+    }
         try {
             player = new MediaPlayer();
             player.setDataSource(AUDIO_FILE_PATH);
