@@ -54,13 +54,7 @@ public class MainActivity extends AppCompatActivity {
         // Memastikan semua izin telah diberikan
         requestPermissions();
 
-        // Log untuk debugging
-        Log.d(TAG, "Aplikasi dimulai");
-
-        // Menulis log ke file
-        writeLogToFile("Aplikasi dimulai");
-
-       // Mendapatkan instance WifiManager
+               // Mendapatkan instance WifiManager
         WifiManager wifiManager = (WifiManager) MainActivity.this.getSystemService(Context.WIFI_SERVICE);
         
         if (wifiManager != null) {
