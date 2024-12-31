@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (player != null) {
             player.stop();
-            player.release
+            player.release();
                 }
     }
 
