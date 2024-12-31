@@ -61,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
         offlineMode = new OfflineMode(this);
         // Memulai hotspot
         offlineMode.startHotspot();
+// Memeriksa status hotspot
+    offlineMode.verifyHotspotStatus();
 
         ClientMode clientMode = new ClientMode(this);
 
