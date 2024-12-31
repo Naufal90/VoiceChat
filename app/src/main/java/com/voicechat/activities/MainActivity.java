@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         // Menghentikan hotspot
         offlineMode.stopHotspot();
-        logWriter.writerLog("Aplikasi Dihentikan")
+        logWriter.writerLog("Aplikasi Dihentikan");
     }
 
     private void startRecording() {
