@@ -73,7 +73,13 @@ clientMode.verifyConnection(hotspotSSID);
 
 // Memulai koneksi manual atau otomatis
 clientMode.connectToHotspot(hotspotSSID);
-    
+
+        PluginMode pluginMode = new PluginMode(this);
+String serverUrl = "http://example.com/plugin-endpoint";
+String command = "{ \"action\": \"start\" }";
+
+pluginMode.sendDataToPlugin(serverUrl, command);
+   
                // Mendapatkan instance WifiManager
         WifiManager wifiManager = (WifiManager) MainActivity.this.getSystemService(Context.WIFI_SERVICE);
         
