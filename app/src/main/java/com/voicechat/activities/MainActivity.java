@@ -61,6 +61,16 @@ public class MainActivity extends AppCompatActivity {
         offlineMode = new OfflineMode(this);
         // Memulai hotspot
         offlineMode.startHotspot();
+
+        ClientMode clientMode = new ClientMode(this);
+
+String hotspotSSID = "NamaHotspot";
+
+// Memeriksa koneksi ke hotspot
+clientMode.verifyConnection(hotspotSSID);
+
+// Memulai koneksi manual atau otomatis
+clientMode.connectToHotspot(hotspotSSID);
     
                // Mendapatkan instance WifiManager
         WifiManager wifiManager = (WifiManager) MainActivity.this.getSystemService(Context.WIFI_SERVICE);
