@@ -56,12 +56,15 @@ public class MainActivity extends AppCompatActivity {
         offlineMode = new OfflineMode(this);
         clientMode = new ClientMode(this);
         pluginMode = new PluginMode(this);
+        vpnMode = new VpnMode(this);
 
         // Memulai hotspot
         offlineMode.startHotspot();
 
         // Memeriksa status hotspot
         offlineMode.verifyHotspotStatus();
+
+        vpnMode.checkVpnConnection();
 
         // Memeriksa koneksi ke hotspot
         String hotspotSSID = "NamaHotspot";
