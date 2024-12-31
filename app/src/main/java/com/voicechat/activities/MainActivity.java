@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
             recorder.stop();
             recorder.release();
             recorder = null;
-            showSuccessToast("Perekaman dihentikan")
+            showSuccessToast("Perekaman dihentikan");
         }
     }
 
