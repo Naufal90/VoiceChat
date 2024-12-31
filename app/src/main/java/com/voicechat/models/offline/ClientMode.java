@@ -1,7 +1,7 @@
 package com.voicechat;
 
 import android.content.Context;
-import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.widget.Toast;
 
@@ -14,36 +14,59 @@ public class ClientMode {
         wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
     }
 
-    // Fungsi untuk menghubungkan ke hotspot Player 1
-    public void connectToHotspot(String hotspotSSID, String hotspotPassword) {
+    // Fungsi untuk memulai koneksi ke hotspot
+    public void connectToHotspot(String hotspotSSID) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            Toast.makeText(context, "Android Q ke atas tidak mendukung API langsung untuk menghubungkan ke Wi-Fi.", Toast.LENGTH_LONG).show();
-            return;
+            // Memberikan peringatan kepada pengguna untuk menghubungkan perangkat secara manual
+            Toast.makeText(context,
+                "Silakan hubungkan perangkat Anda secara manual ke hotspot \"" 
+                + hotspotSSID + "\" melalui pengaturan Wi-Fi sebelum melanjutkan.",
+                Toast.LENGTH_LONG).show();
+        } else {
+            // Logika otomatis untuk API 26-28
+            WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+
+            // Konfigurasi Wi-Fi untuk SSID tertentu
+            WifiConfiguration wifiConfig = new WifiConfiguration();
+            wifiConfig.SSID = "\"" + hotspotSSID + "\""; // Tambahkan tanda petik agar sesuai format
+            int netId = wifiManager.addNetwork(wifiConfig);
+
+            if (netId == -1) {
+                Toast.makeText(context, "Gagal menambahkan konfigurasi Wi-Fi.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Sambungkan ke jaringan
+            wifiManager.disconnect();
+            wifiManager.enableNetwork(netId, true);
+            wifiManager.reconnect();
+
+            Toast.makeText(context, "Mencoba menghubungkan ke " + hotspotSSID, Toast.LENGTH_SHORT).show();
         }
-
-        // Membuat konfigurasi Wi-Fi
-        WifiConfiguration wifiConfig = new WifiConfiguration();
-        wifiConfig.SSID = "\"" + hotspotSSID + "\""; // Tambahkan tanda kutip untuk SSID
-        wifiConfig.preSharedKey = "\"" + hotspotPassword + "\""; // Tambahkan tanda kutip untuk password
-
-        // Tambahkan konfigurasi Wi-Fi ke WifiManager
-        int netId = wifiManager.addNetwork(wifiConfig);
-        if (netId == -1) {
-            Toast.makeText(context, "Gagal menambahkan konfigurasi Wi-Fi.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Hubungkan ke jaringan Wi-Fi
-        wifiManager.disconnect();
-        wifiManager.enableNetwork(netId, true);
-        wifiManager.reconnect();
-
-        Toast.makeText(context, "Mencoba menghubungkan ke " + hotspotSSID, Toast.LENGTH_SHORT).show();
     }
 
-    // Fungsi untuk memeriksa apakah terhubung dengan hotspot
+    // Fungsi untuk memeriksa apakah perangkat sudah terhubung ke hotspot
     public boolean isConnectedToHotspot(String hotspotSSID) {
-        String currentSSID = wifiManager.getConnectionInfo().getSSID();
-        return currentSSID != null && currentSSID.equals("\"" + hotspotSSID + "\"");
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        if (wifiInfo != null) {
+            String currentSSID = wifiInfo.getSSID();
+            // Periksa apakah SSID yang terhubung sesuai dengan SSID hotspot
+            return currentSSID != null && currentSSID.equals("\"" + hotspotSSID + "\"");
+        }
+        return false;
+    }
+
+    // Fungsi untuk memeriksa koneksi dan memberikan peringatan jika belum terhubung
+    public void verifyConnection(String hotspotSSID) {
+        if (!isConnectedToHotspot(hotspotSSID)) {
+            Toast.makeText(context,
+                "Perangkat Anda belum terhubung ke hotspot \"" + hotspotSSID + 
+                "\". Silakan hubungkan terlebih dahulu melalui pengaturan Wi-Fi.",
+                Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(context, 
+                "Perangkat Anda sudah terhubung ke hotspot \"" + hotspotSSID + "\".", 
+                Toast.LENGTH_SHORT).show();
+        }
     }
 }
