@@ -144,7 +144,7 @@
 
     <!-- Command EditText -->
     <EditText
-        android:id="@+id/commandEditText"
+        android:id="@+id/etCommand"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter Command"
@@ -152,6 +152,12 @@
         android:background="@android:color/white"
         android:padding="10dp"
         android:layout_marginTop="20dp"/>
+
+    <EditText
+    android:id="@+id/etServerUrl"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:hint="Masukkan URL Server" />
 
     <!-- Footer: App Info and Update -->
     <LinearLayout
