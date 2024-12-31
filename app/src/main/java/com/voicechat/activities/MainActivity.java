@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String AUDIO_FILE_PATH = "/storage/emulated/0/VoiceChat/audio_file.3gp";
     private static final String TAG = "VoiceChatApp";
     private static final int REQUEST_CODE_PERMISSIONS = 1;
+    private static final long MAX_LOG_SIZE = 1000000; // 1 MB
 
     private OfflineMode offlineMode;
     private ClientMode clientMode;
