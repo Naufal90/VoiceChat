@@ -7,7 +7,6 @@ import android.widget.Toast;
 public class OfflineMode {
     private Context context;
     private WifiManager wifiManager;
-    private WifiManager.LocalOnlyHotspotReservation hotspotReservation;
 
     public OfflineMode(Context context) {
         this.context = context;
@@ -17,22 +16,19 @@ public class OfflineMode {
     // Fungsi untuk memulai hotspot
     public void startHotspot() {
         if (wifiManager.isWifiEnabled()) {
-            wifiManager.setWifiEnabled(false); // Matikan Wi-Fi jika menyala
+            wifiManager.setWifiEnabled(false); // Matikan Wi-Fi terlebih dahulu
         }
 
+        // Menampilkan peringatan bahwa hotspot sedang dimulai
+        Toast.makeText(context, "Hotspot sedang dimulai...", Toast.LENGTH_SHORT).show();
+
+        // Di Android API 26+ (Oreo ke atas), gunakan LocalOnlyHotspot
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             wifiManager.startLocalOnlyHotspot(new WifiManager.LocalOnlyHotspotCallback() {
                 @Override
                 public void onStarted(WifiManager.LocalOnlyHotspotReservation reservation) {
                     super.onStarted(reservation);
-                    hotspotReservation = reservation;
-                    Toast.makeText(context, "Hotspot dimulai!", Toast.LENGTH_SHORT).show();
-                }
-
-                @Override
-                public void onStopped() {
-                    super.onStopped();
-                    Toast.makeText(context, "Hotspot dihentikan!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Hotspot berhasil dimulai!", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -42,24 +38,18 @@ public class OfflineMode {
                 }
             }, null);
         } else {
-            Toast.makeText(context, "Fitur ini hanya tersedia di Android Oreo atau lebih baru!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "API tidak mendukung hotspot otomatis!", Toast.LENGTH_SHORT).show();
         }
     }
 
-    // Fungsi untuk memeriksa apakah perangkat terhubung ke hotspot
-    public boolean isConnectedToHotspot() {
-        String ssid = wifiManager.getConnectionInfo().getSSID();
-        return ssid != null && ssid.contains("Hotspot");
-    }
-
-    // Fungsi untuk menghentikan hotspot
-    public void stopHotspot() {
-        if (hotspotReservation != null) {
-            hotspotReservation.close();
-            hotspotReservation = null;
-            Toast.makeText(context, "Hotspot dihentikan!", Toast.LENGTH_SHORT).show();
+    // Fungsi untuk memeriksa status hotspot
+    public void verifyHotspotStatus() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            // API 26 ke atas tidak memiliki akses langsung ke status hotspot
+            Toast.makeText(context, "Periksa apakah perangkat lain dapat melihat hotspot!", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(context, "Tidak ada hotspot yang aktif!", Toast.LENGTH_SHORT).show();
+            // API di bawah 26 (gunakan metode manual atau akses root jika diperlukan)
+            Toast.makeText(context, "Pastikan hotspot aktif secara manual!", Toast.LENGTH_SHORT).show();
         }
     }
 }
