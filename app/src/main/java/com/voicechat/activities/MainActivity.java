@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Memastikan semua izin telah diberikan
-        requestPermissions();
+        requestPermissions(new String[]{Manifest.permission.YOUR_PERMISSION}, REQUEST_CODE);
 
         offlineMode = new OfflineMode(this);
         clientMode = new ClientMode(this);
