@@ -153,33 +153,7 @@ public void onRequestPermissionsResult(int requestCode, String[] permissions, in
         }
     }
 }
-
-        // Metode untuk menulis log ke file
-    private void writeLogToFile(String message) {
-        try {
-            // Mendapatkan folder VoiceChat di external storage
-            File logFolder = new File(getExternalFilesDir(null), "VoiceChat");
-            if (!logFolder.exists()) {
-                logFolder.mkdir();  // Membuat folder jika belum ada
-            }
-
-            // Membuat file log
-            File logFile = new File(logFolder, "app_log.txt");
-            
-            // Menulis log ke file
-            BufferedWriter writer = new BufferedWriter(new FileWriter(logFile, true));
-            String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-            writer.append(timestamp + " - " + message);
-            writer.newLine();
-            writer.close();
-
-            Log.d(TAG, "Log berhasil ditulis ke file");
-        } catch (IOException e) {
-            Log.e(TAG, "Gagal menulis log ke file", e);
-        }
-    }
-}
-    
+      
     private void startRecording() {
         try {
             File folder = new File(getExternalFilesDir(null), "VoiceChat");
