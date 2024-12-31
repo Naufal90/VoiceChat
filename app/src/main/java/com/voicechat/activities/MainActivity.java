@@ -26,6 +26,8 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 
+import com.voicechat.OfflineMode;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -37,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String AUDIO_FILE_PATH = "/storage/emulated/0/VoiceChat/audio_file.3gp";
     private static final String TAG = "VoiceChatApp";
     private static final int REQUEST_CODE_PERMISSIONS = 1;
+
+    private OfflineMode offlineMode;
 
     private Button recordButton, stopRecordButton, playButton, stopPlayButton, sendButton, startHotspotButton, connectButton;
     private EditText commandEditText;
@@ -54,6 +58,10 @@ public class MainActivity extends AppCompatActivity {
         // Memastikan semua izin telah diberikan
         requestPermissions();
 
+        offlineMode = new OfflineMode(this);
+        // Memulai hotspot
+        offlineMode.startHotspot();
+    
                // Mendapatkan instance WifiManager
         WifiManager wifiManager = (WifiManager) MainActivity.this.getSystemService(Context.WIFI_SERVICE);
         
@@ -96,6 +104,15 @@ public class MainActivity extends AppCompatActivity {
         startHotspotButton.setOnClickListener(v -> startHotspot());
         connectButton.setOnClickListener(v -> connectToHotspot("SSID_HOTSPOT", "PASSWORD_HOTSPOT"));
     }
+
+        @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // Menghentikan hotspot
+        offlineMode.stopHotspot();
+    }
+}
 
     private void requestPermissions() {
         String[] permissions = {
