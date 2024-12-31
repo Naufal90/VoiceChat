@@ -219,8 +219,11 @@ public void onRequestPermissionsResult(int requestCode, String[] permissions, in
         return;
     }
 
-    if (player == null) {
-        player = new MediaPlayer();
+    if (player != null) {
+    player.stop();
+    player.release();
+}
+player = new MediaPlayer();
         try {
             player.setDataSource(AUDIO_FILE_PATH);
             player.prepare();
