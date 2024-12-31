@@ -12,6 +12,7 @@ import android.widget.Toast;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.app.AlertDialog;
+import com.voicechat.LogWritter;
 
 import android.net.wifi.WifiManager;
 import android.content.Context;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private OfflineMode offlineMode;
     private ClientMode clientMode;
     private PluginMode pluginMode;
+    private VpnMode vpnMode;
 
     private Button recordButton, stopRecordButton, playButton, stopPlayButton, sendButton, startHotspotButton, connectButton;
     private EditText etServerUrl, etCommand;
@@ -44,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
 
     private MediaRecorder recorder;
     private MediaPlayer player;
+
+    private LogWriter logWriter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         clientMode = new ClientMode(this);
         pluginMode = new PluginMode(this);
         vpnMode = new VpnMode(this);
+        logWriter = new LogWriter(this);
 
         // Memulai hotspot
         offlineMode.startHotspot();
@@ -75,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
         String serverUrl = "http://example.com/plugin-endpoint";
         String command = "{ \"action\": \"start\" }";
         pluginMode.sendDataToPlugin(serverUrl, command);
+
+        logWriter.writerLog("Aplikasi Dimulai");
 
         // Inisialisasi AdMob
         MobileAds.initialize(this, initializationStatus -> {});
@@ -116,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         // Menghentikan hotspot
         offlineMode.stopHotspot();
+        logWriter.writerLog("Aplikasi Dihentikan")
     }
 
     private void startRecording() {
