@@ -1,4 +1,4 @@
-package com.voicechat;
+package com.voicechat.utils;
 
 import android.Manifest;
 import android.app.Activity;
