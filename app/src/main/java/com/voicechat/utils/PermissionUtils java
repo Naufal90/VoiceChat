@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.widget.Toast;
-import com.voicechat.PermissionUtils;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -15,44 +14,54 @@ public class PermissionUtils {
     // Mendefinisikan konstanta untuk requestCode
     private static final int REQUEST_CODE = 100;
 
-    // Meminta izin untuk mengakses jaringan dan penyimpanan
+    // Daftar izin yang diperlukan
+    private static final String[] REQUIRED_PERMISSIONS = {
+        Manifest.permission.RECORD_AUDIO,
+        Manifest.permission.MODIFY_AUDIO_SETTINGS,
+        Manifest.permission.INTERNET,
+        Manifest.permission.ACCESS_NETWORK_STATE,
+        Manifest.permission.ACCESS_WIFI_STATE,
+        Manifest.permission.CHANGE_WIFI_STATE,
+        Manifest.permission.WRITE_SETTINGS,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS,
+        Manifest.permission.CHANGE_NETWORK_STATE,
+        Manifest.permission.VIBRATE,
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.CHANGE_WIFI_MULTICAST_STATE,
+        Manifest.permission.ACCESS_VPN_STATE
+    };
+
+    // Meminta izin untuk mengakses berbagai fitur
     public static void requestPermissions(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(activity, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(activity, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-
-                // Meminta izin dari pengguna
-                ActivityCompat.requestPermissions(activity,
-                        new String[]{
-                                Manifest.permission.INTERNET,
-                                Manifest.permission.ACCESS_NETWORK_STATE,
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                Manifest.permission.READ_EXTERNAL_STORAGE,
-                                Manifest.permission.RECORD_AUDIO
-                        }, REQUEST_CODE);
+            // Mengecek izin yang belum diberikan dan meminta izin yang diperlukan
+            for (String permission : REQUIRED_PERMISSIONS) {
+                if (ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(activity, new String[]{permission}, REQUEST_CODE);
+                }
             }
         }
     }
 
     // Mengecek apakah izin sudah diberikan
     public static boolean isPermissionGranted(Activity activity) {
-        return ContextCompat.checkSelfPermission(activity, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_NETWORK_STATE) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(activity, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
+        for (String permission : REQUIRED_PERMISSIONS) {
+            if (ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+        return true;
     }
 
     // Menangani hasil permintaan izin
     public static void handlePermissionResult(int requestCode, String[] permissions, int[] grantResults, Activity activity) {
         if (requestCode == REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(activity, "Izin diberikan!", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(activity, "Izin ditolak! Beberapa fitur tidak akan berfungsi.", Toast.LENGTH_SHORT).show();
+            for (int i = 0; i < grantResults.length; i++) {
+                if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(activity, "Izin " + permissions[i] + " ditolak", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }
