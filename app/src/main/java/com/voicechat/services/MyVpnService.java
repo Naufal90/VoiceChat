@@ -1,4 +1,4 @@
-package com.voicechat;
+package com.voicechat.services;
 
 import android.content.Intent;
 import android.net.VpnService;
