@@ -1,4 +1,4 @@
-package com.voicechat;
+package com.voicechat.managers;
 
 import android.content.Context;
 import android.hardware.Sensor;
