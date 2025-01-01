@@ -13,12 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.app.AlertDialog;
 
-import com.voicechat.log.LogWriter;
 import com.voicechat.R;
-import com.voicechat.models.offline.OfflineMode;
-import com.voicechat.models.offline.ClientMode;
-import com.voicechat.models.plugin.PluginMode;
-import com.voicechat.models.vpn.VpnMode;
 
 import android.net.wifi.WifiManager;
 import android.content.Context;
