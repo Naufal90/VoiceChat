@@ -161,13 +161,32 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void showSuccessToast(String message) {
+    Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+}
+
+private void showErrorToast(String message) {
+    Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+}
+
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        // Menghentikan hotspot
-        offlineMode.stopHotspot();
-        logWriter.writerLog("Aplikasi Dihentikan");
+protected void onDestroy() {
+    super.onDestroy();
+    // Menghentikan hotspot
+    offlineMode.stopHotspot();
+    logWriter.writerLog("Aplikasi Dihentikan");
+
+    // Pastikan untuk melepaskan resource recorder dan player
+    if (recorder != null) {
+        recorder.release();
+        recorder = null;
     }
+
+    if (player != null) {
+        player.release();
+        player = null;
+    }
+}
 
     private void startRecording() {
         try {
@@ -202,16 +221,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startPlaying() {
-        File audioFile = new File(AUDIO_FILE_PATH);
-        if (!audioFile.exists()) {
-            Toast.makeText(this, "File audio tidak ditemukan", Toast.LENGTH_SHORT).show();
-            return;
-        }
+    File audioFile = new File(AUDIO_FILE_PATH);
+    if (!audioFile.exists()) {
+        Toast.makeText(this, "File audio tidak ditemukan", Toast.LENGTH_SHORT).show();
+        return;
+    }
 
-        if (player != null) {
-            player.stop();
-            player.release();
-                }
+    if (player != null) {
+        player.stop();
+        player.release();
+    }
+
+    player = new MediaPlayer();
+    try {
+        player.setDataSource(audioFile.getAbsolutePath());
+        player.prepare();
+        player.start();
+        showSuccessToast("Pemutaran dimulai");
+    } catch (IOException e) {
+        e.printStackTrace();
+        showErrorToast("Gagal memutar audio");
+    }
     }
 
     @Override
