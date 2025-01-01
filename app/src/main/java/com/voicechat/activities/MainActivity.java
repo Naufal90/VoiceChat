@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Memastikan semua izin telah diberikan
-        requestPermissions(new String[]{Manifest.permission.YOUR_PERMISSION}, REQUEST_CODE);
+        requestPermissions();
 
         offlineMode = new OfflineMode(this);
         clientMode = new ClientMode(this);
@@ -118,6 +118,49 @@ public class MainActivity extends AppCompatActivity {
         startHotspotButton.setOnClickListener(v -> startHotspot());
         connectButton.setOnClickListener(v -> connectToHotspot("SSID_HOTSPOT", "PASSWORD_HOTSPOT"));
     }
+
+    private void requestPermissions() {
+        // Daftar izin yang diperlukan
+        String[] permissions = {
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.MODIFY_AUDIO_SETTINGS,
+            Manifest.permission.INTERNET,
+            Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.ACCESS_WIFI_STATE,
+            Manifest.permission.CHANGE_WIFI_STATE,
+            Manifest.permission.WRITE_SETTINGS,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS,
+            Manifest.permission.CHANGE_NETWORK_STATE,
+            Manifest.permission.VIBRATE,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.CHANGE_WIFI_MULTICAST_STATE,
+            Manifest.permission.ACCESS_VPN_STATE
+        };
+
+        // Mengecek izin yang belum diberikan dan meminta izin yang diperlukan
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{permission}, REQUEST_CODE);
+            }
+        }
+    }
+
+    // Menangani hasil permintaan izin
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        
+        if (requestCode == REQUEST_CODE) {
+            for (int i = 0; i < grantResults.length; i++) {
+                if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "Izin " + permissions[i] + " ditolak", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+}
 
     @Override
     protected void onDestroy() {
