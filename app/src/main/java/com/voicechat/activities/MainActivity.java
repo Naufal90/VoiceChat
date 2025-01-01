@@ -70,6 +70,9 @@ public class MainActivity extends AppCompatActivity {
         // Memastikan semua izin telah diberikan
         requestPermissions();
 
+        if (!PermissionUtils.isPermissionGranted(this)) {
+            PermissionUtils.requestPermissions(this);
+
         offlineMode = new OfflineMode(this);
         clientMode = new ClientMode(this);
         pluginMode = new PluginMode(this);
@@ -129,6 +132,15 @@ public class MainActivity extends AppCompatActivity {
         sendButton.setOnClickListener(v -> sendCommand());
         startHotspotButton.setOnClickListener(v -> startHotspot());
         connectButton.setOnClickListener(v -> connectToHotspot("SSID_HOTSPOT", "PASSWORD_HOTSPOT"));
+    }
+
+        @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // Menangani hasil permintaan izin
+        PermissionUtils.handlePermissionResult(requestCode, permissions, grantResults, this);
+    }
     }
 
         private void showSuccessToast(String message) {
