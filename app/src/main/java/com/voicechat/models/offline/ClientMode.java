@@ -1,9 +1,11 @@
 package com.voicechat;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.widget.Toast;
+import androidx.appcompat.app.AlertDialog;
 
 public class ClientMode {
     private Context context;
@@ -17,31 +19,11 @@ public class ClientMode {
     // Fungsi untuk memulai koneksi ke hotspot
     public void connectToHotspot(String hotspotSSID) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            // Memberikan peringatan kepada pengguna untuk menghubungkan perangkat secara manual
+            // Jika perangkat menggunakan Android Q atau lebih tinggi, arahkan pengguna untuk menghubungkan secara manual
             Toast.makeText(context,
                 "Silakan hubungkan perangkat Anda secara manual ke hotspot \"" 
                 + hotspotSSID + "\" melalui pengaturan Wi-Fi sebelum melanjutkan.",
                 Toast.LENGTH_LONG).show();
-        } else {
-            // Logika otomatis untuk API 26-28
-            WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-
-            // Konfigurasi Wi-Fi untuk SSID tertentu
-            WifiConfiguration wifiConfig = new WifiConfiguration();
-            wifiConfig.SSID = "\"" + hotspotSSID + "\""; // Tambahkan tanda petik agar sesuai format
-            int netId = wifiManager.addNetwork(wifiConfig);
-
-            if (netId == -1) {
-                Toast.makeText(context, "Gagal menambahkan konfigurasi Wi-Fi.", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            // Sambungkan ke jaringan
-            wifiManager.disconnect();
-            wifiManager.enableNetwork(netId, true);
-            wifiManager.reconnect();
-
-            Toast.makeText(context, "Mencoba menghubungkan ke " + hotspotSSID, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -59,10 +41,18 @@ public class ClientMode {
     // Fungsi untuk memeriksa koneksi dan memberikan peringatan jika belum terhubung
     public void verifyConnection(String hotspotSSID) {
         if (!isConnectedToHotspot(hotspotSSID)) {
-            Toast.makeText(context,
-                "Perangkat Anda belum terhubung ke hotspot \"" + hotspotSSID + 
-                "\". Silakan hubungkan terlebih dahulu melalui pengaturan Wi-Fi.",
-                Toast.LENGTH_LONG).show();
+            // Jika perangkat belum terhubung, munculkan dialog untuk mengarahkan pengguna
+            new AlertDialog.Builder(context)
+                .setTitle("Koneksi Hotspot")
+                .setMessage("Perangkat Anda belum terhubung ke hotspot \"" + hotspotSSID + 
+                    "\". Silakan hubungkan terlebih dahulu melalui pengaturan Wi-Fi.")
+                .setCancelable(false)
+                .setPositiveButton("Buka Pengaturan", (dialog, id) -> {
+                    // Arahkan pengguna ke pengaturan Wi-Fi
+                    context.startActivity(new Intent(android.provider.Settings.ACTION_WIFI_SETTINGS));
+                })
+                .setNegativeButton("Batal", (dialog, id) -> dialog.dismiss())
+                .show();
         } else {
             Toast.makeText(context, 
                 "Perangkat Anda sudah terhubung ke hotspot \"" + hotspotSSID + "\".", 
