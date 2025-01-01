@@ -1,4 +1,4 @@
-package com.voicechat;
+package com.voicechat.log;
 
 import android.content.Context;
 import java.io.File;
