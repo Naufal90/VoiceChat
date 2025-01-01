@@ -21,7 +21,6 @@ import com.voicechat.models.plugin.PluginMode;
 import com.voicechat.models.vpn.VpnMode;
 
 import android.net.wifi.WifiManager;
-import android.net.wifi.WifiConfiguration;
 import android.content.Context;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,7 +38,7 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity {
     private static final String AUDIO_FILE_PATH = "/storage/emulated/0/VoiceChat/audio_file.3gp";
     private static final String TAG = "VoiceChatApp";
-    private static final int REQUEST_CODE_PERMISSIONS = 1;
+    private static final int REQUEST_CODE = 100;
 
     private OfflineMode offlineMode;
     private ClientMode clientMode;
