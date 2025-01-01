@@ -14,10 +14,8 @@ import android.view.MenuItem;
 import android.app.AlertDialog;
 
 import com.voicechat.R;
-import com.voicechat.models.OfflineMode;
-import com.voicechat.models.ClientMode;
-import com.voicechat.models.PluginMode;
-import com.voicechat.models.VpnMode;
+import com.voicechat.models;
+import com.voicechat.log;
 
 import android.net.wifi.WifiManager;
 import android.content.Context;
