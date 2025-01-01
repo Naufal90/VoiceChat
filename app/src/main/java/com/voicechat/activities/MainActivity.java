@@ -144,6 +144,8 @@ public class MainActivity extends AppCompatActivity {
             if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{permission}, REQUEST_CODE);
             }
+        }
+    }
 
     // Menangani hasil permintaan izin
     @Override
@@ -155,6 +157,9 @@ public class MainActivity extends AppCompatActivity {
                 if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(this, "Izin " + permissions[i] + " ditolak", Toast.LENGTH_SHORT).show();
                 }
+            }
+        }
+    }
 
     @Override
     protected void onDestroy() {
