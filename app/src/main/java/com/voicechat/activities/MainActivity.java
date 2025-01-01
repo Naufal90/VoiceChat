@@ -14,8 +14,19 @@ import android.view.MenuItem;
 import android.app.AlertDialog;
 
 import com.voicechat.R;
-import com.voicechat.models;
-import com.voicechat.log;
+import com.voicechat.models.OfflineMode;
+import com.voicechat.models.ClientMode;
+import com.voicechat.models.PluginMode;
+import com.voicechat.models.VpnMode;
+import com.voicechat.log.LogWriter;
+import com.voicechat.managers.MyAudioManager;
+import com.voicechat.managers.ProximitySensor;
+import com.voicechat.managers.VoiceModeHandler;
+import com.voicechat.services.MyVpnService;
+import com.voicechat.utils.AudioUtils;
+import com.voicechat.utils.NetworkUtils;
+import com.voicechat.utils.PermissionUtils;
+import com.voicechat.utils.ToastUtils;
 
 import android.net.wifi.WifiManager;
 import android.content.Context;
