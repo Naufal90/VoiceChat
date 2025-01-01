@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.app.AlertDialog;
 import com.voicechat.LogWritter;
+import com.voicechat.R;
 
 import android.net.wifi.WifiManager;
 import android.content.Context;
