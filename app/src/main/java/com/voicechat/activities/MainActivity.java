@@ -16,6 +16,7 @@ import com.voicechat.LogWriter;
 import com.voicechat.R;
 
 import android.net.wifi.WifiManager;
+import android.net.wifi.WifiConfiguration;
 import android.content.Context;
 
 import androidx.appcompat.app.AppCompatActivity;
