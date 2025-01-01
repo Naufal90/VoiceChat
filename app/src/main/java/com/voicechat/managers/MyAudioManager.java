@@ -1,4 +1,4 @@
-package com.voicechat;
+package com.voicechat.managers;
 
 import android.media.AudioFormat;
 import android.media.AudioRecord;
