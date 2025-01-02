@@ -109,4 +109,11 @@ public class VpnMode {
             Toast.makeText(context, "Perangkat terputus", Toast.LENGTH_SHORT).show();
         }
     };
+
+    public void checkVpnConnection() {
+    if (isVpnConnected()) {
+        Toast.makeText(context, "VPN terhubung", Toast.LENGTH_SHORT).show();
+    } else {
+        Toast.makeText(context, "VPN tidak terhubung", Toast.LENGTH_SHORT).show();
+    }
 }
