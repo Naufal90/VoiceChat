@@ -144,6 +144,23 @@
 
     <!-- Command EditText -->
     <EditText
+        android:id="@+id/commandEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Masukkan perintah"
+        android:inputType="text"
+        android:padding="10dp"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Button untuk men-submit perintah -->
+    <Button
+        android:id="@+id/submitButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Kirim"
+        android:onClick="onSubmitClicked"/>
+    
+    <EditText
         android:id="@+id/etCommand"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
