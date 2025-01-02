@@ -116,5 +116,4 @@ public class VpnMode {
     } else {
         Toast.makeText(context, "VPN tidak terhubung", Toast.LENGTH_SHORT).show();
     }
-}
-}
+}  // Hanya satu } di sini untuk menutup metode checkVpnConnection()
