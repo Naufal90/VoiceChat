@@ -21,8 +21,7 @@ public class VpnMode {
     private ConnectionsClient connectionsClient;
 
     public VpnMode(Context context) {
-        this.context = context;
-        this.connectionsClient = new ConnectionsClient(context);
+        this.connectionsClient = Nearby.getConnectionsClient(context);
     }
 
     // Fungsi untuk memeriksa status koneksi VPN
