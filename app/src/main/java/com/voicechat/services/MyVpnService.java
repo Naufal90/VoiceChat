@@ -7,7 +7,7 @@ import android.util.Log;
 
 public class MyVpnService extends VpnService {
 
-    private static final String TAG = "MyVpnService";
+    private static final String TAG = ".MyVpnService";
     private ParcelFileDescriptor vpnInterface;
 
     @Override
