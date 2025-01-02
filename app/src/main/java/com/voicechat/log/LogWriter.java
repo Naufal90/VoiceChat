@@ -20,7 +20,6 @@ public class LogWriter {
         logFile = new File(logDirectory, "app_log.txt");
     }
 
-    public class LogWriter {
     public void writerLog(String message) {
         Log.d("LogWriter", message);
     }
