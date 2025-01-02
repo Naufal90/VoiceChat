@@ -67,10 +67,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (!PermissionUtils.isPermissionGranted(this)) {
-            PermissionUtils.requestPermissions(this);
+        if (!PermissionUtils.isPermissionGranted(this, PermissionUtils.getRequiredPermissions())) {
+    PermissionUtils.requestPermissions(this);
         }
-    }
 
         offlineMode = new OfflineMode(this);
         clientMode = new ClientMode(this);
@@ -96,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         String command = "{ \"action\": \"start\" }";
         pluginMode.sendDataToPlugin(serverUrl, command);
 
-        logWriter.writeLog("Aplikasi Dimulai");
+        logWriter.writeLog();
 
         // Inisialisasi AdMob
         MobileAds.initialize(this, initializationStatus -> {});
