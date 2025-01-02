@@ -84,7 +84,8 @@ public class MainActivity extends AppCompatActivity {
         // Memeriksa status hotspot
         offlineMode.verifyHotspotStatus();
 
-        vpnMode.checkVpnConnection();
+        VpnMode vpnMode = new VpnMode(getApplicationContext());
+vpnMode.checkVpnConnection();
 
         // Memeriksa koneksi ke hotspot
         String hotspotSSID = "NamaHotspot";
