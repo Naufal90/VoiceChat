@@ -49,35 +49,32 @@ public class VpnMode {
 
     // Fungsi untuk memulai pencarian perangkat di jaringan VPN menggunakan mDNS
     private void startDeviceDiscovery() {
-        // Menggunakan Nearby Connections API untuk menemukan perangkat dalam jaringan yang sama
-        String serviceId = "com.voicechat.service"; // ID layanan mDNS
+    // Menggunakan Nearby Connections API untuk menemukan perangkat dalam jaringan yang sama
+    String serviceId = "com.voicechat.service"; // ID layanan mDNS
 
-        connectionsClient.startDiscovery(
-                serviceId,
-                new EndpointDiscoveryCallback() {
-                    @Override
-                    public void onEndpointFound(String endpointId, String deviceName, String serviceId) {
-                        // Ketika perangkat ditemukan, lakukan koneksi
-                        Toast.makeText(context, "Perangkat ditemukan: " + deviceName, Toast.LENGTH_SHORT).show();
-                        // Lakukan koneksi lebih lanjut jika diperlukan
-                        connectionsClient.requestConnection("MyDevice", endpointId, connectionLifecycleCallback);
-                    }
+    // Menambahkan konfigurasi Strategy
+    Strategy strategy = new Strategy(Strategy.TETHERING, Strategy.P2P_CLUSTER);
 
-                    @Override
-                    public void onEndpointLost(String endpointId) {
-                        // Ketika perangkat hilang dari jaringan
-                        Toast.makeText(context, "Perangkat hilang", Toast.LENGTH_SHORT).show();
-                    }
-                },
-                new Strategy() {
-                    // Strategi untuk pencarian perangkat dalam jaringan
-                    @Override
-                    public int getDiscoveryMode() {
-                        return Strategy.DISCOVERY_MODE;
-                    }
+    connectionsClient.startDiscovery(
+            serviceId,
+            new EndpointDiscoveryCallback() {
+                @Override
+                public void onEndpointFound(String endpointId, String deviceName, String serviceId) {
+                    // Ketika perangkat ditemukan, lakukan koneksi
+                    Toast.makeText(context, "Perangkat ditemukan: " + deviceName, Toast.LENGTH_SHORT).show();
+                    // Lakukan koneksi lebih lanjut jika diperlukan
+                    connectionsClient.requestConnection("MyDevice", endpointId, connectionLifecycleCallback);
                 }
-        );
-    }
+
+                @Override
+                public void onEndpointLost(String endpointId) {
+                    // Ketika perangkat hilang dari jaringan
+                    Toast.makeText(context, "Perangkat hilang", Toast.LENGTH_SHORT).show();
+                }
+            },
+            strategy // Menambahkan strategy yang telah diatur
+    );
+}
 
     // Callback untuk mengelola siklus koneksi perangkat yang ditemukan
     private final ConnectionLifecycleCallback connectionLifecycleCallback = new ConnectionLifecycleCallback() {
