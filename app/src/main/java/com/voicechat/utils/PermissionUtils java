@@ -48,14 +48,14 @@ public class PermissionUtils {
     }
 
     // Mengecek apakah izin sudah diberikan
-    public static boolean isPermissionGranted(Activity activity) {
-        for (String permission : REQUIRED_PERMISSIONS) {
-            if (ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
-                return false;
-            }
+    public static boolean isPermissionGranted(Activity activity, String[] REQUIRED_PERMISSIONS) {
+    for (String permission : REQUIRED_PERMISSIONS) {
+        if (ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
+            return false; // Jika ada satu izin yang belum diberikan
         }
-        return true;
     }
+    return true; // Semua izin sudah diberikan
+}
 
     // Menangani hasil permintaan izin
     public static void handlePermissionResult(int requestCode, String[] permissions, int[] grantResults, Activity activity) {
