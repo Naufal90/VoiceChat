@@ -50,7 +50,6 @@
         </activity>      <!-- Declare VPN service -->
         <service>
             <intent-filter>
-            </intent-filter>
         </service>
     </application>
 </manifest>
