@@ -110,10 +110,14 @@ public class VpnMode {
         }
     };
 
+    // Fungsi untuk memeriksa koneksi VPN
     public void checkVpnConnection() {
-    if (isVpnConnected()) {
-        Toast.makeText(context, "VPN terhubung", Toast.LENGTH_SHORT).show();
-    } else {
-        Toast.makeText(context, "VPN tidak terhubung", Toast.LENGTH_SHORT).show();
+        if (isVpnConnected()) {
+            Toast.makeText(context, "VPN terhubung", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "VPN tidak terhubung", Toast.LENGTH_SHORT).show();
+        }
     }
-}  // Hanya satu } di sini untuk menutup metode checkVpnConnection()
+
+    // Menutup class VpnMode dengan tanda kurung penutup
+}
