@@ -5,11 +5,19 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.widget.Toast;
 
+import com.google.android.gms.nearby.connection.ConnectionLifecycleCallback;
+import com.google.android.gms.nearby.connection.EndpointDiscoveryCallback;
+import com.google.android.gms.nearby.connection.Strategy;
+import com.google.android.gms.nearby.connection.ConnectionsClient;
+import com.google.android.gms.nearby.connection.Payload;
+
 public class VpnMode {
     private Context context;
+    private ConnectionsClient connectionsClient;
 
     public VpnMode(Context context) {
         this.context = context;
+        this.connectionsClient = new ConnectionsClient(context);
     }
 
     // Fungsi untuk memeriksa status koneksi VPN
@@ -27,11 +35,76 @@ public class VpnMode {
     // Fungsi untuk menghubungkan dengan perangkat yang berada dalam VPN yang sama
     public void connectToVpnNetwork() {
         if (isVpnConnected()) {
-            // Implementasikan logika untuk mencari perangkat yang terhubung dalam jaringan VPN yang sama
-            // Misalnya, menggunakan multicast atau mDNS (Bonjour) untuk mendeteksi perangkat lain
-            Toast.makeText(context, "Terhubung dengan perangkat dalam jaringan VPN yang sama", Toast.LENGTH_SHORT).show();
+            // Mulai pencarian perangkat dalam jaringan VPN yang sama menggunakan mDNS
+            startDeviceDiscovery();
         } else {
             Toast.makeText(context, "VPN tidak terhubung", Toast.LENGTH_SHORT).show();
         }
     }
+
+    // Fungsi untuk memulai pencarian perangkat di jaringan VPN menggunakan mDNS
+    private void startDeviceDiscovery() {
+        // Menggunakan Nearby Connections API untuk menemukan perangkat dalam jaringan yang sama
+        String serviceId = "com.voicechat.service"; // ID layanan mDNS
+
+        connectionsClient.startDiscovery(
+                serviceId,
+                new EndpointDiscoveryCallback() {
+                    @Override
+                    public void onEndpointFound(String endpointId, String deviceName, String serviceId) {
+                        // Ketika perangkat ditemukan, lakukan koneksi
+                        Toast.makeText(context, "Perangkat ditemukan: " + deviceName, Toast.LENGTH_SHORT).show();
+                        // Lakukan koneksi lebih lanjut jika diperlukan
+                        connectionsClient.requestConnection("MyDevice", endpointId, connectionLifecycleCallback);
+                    }
+
+                    @Override
+                    public void onEndpointLost(String endpointId) {
+                        // Ketika perangkat hilang dari jaringan
+                        Toast.makeText(context, "Perangkat hilang", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                new Strategy() {
+                    // Strategi untuk pencarian perangkat dalam jaringan
+                    @Override
+                    public int getDiscoveryMode() {
+                        return Strategy.DISCOVERY_MODE;
+                    }
+                }
+        );
+    }
+
+    // Callback untuk mengelola siklus koneksi perangkat yang ditemukan
+    private final ConnectionLifecycleCallback connectionLifecycleCallback = new ConnectionLifecycleCallback() {
+        @Override
+        public void onConnectionInitiated(String endpointId, ConnectionInfo connectionInfo) {
+            // Ketika koneksi dimulai
+            connectionsClient.acceptConnection(endpointId, new PayloadCallback() {
+                @Override
+                public void onPayloadReceived(String endpointId, Payload payload) {
+                    // Proses data yang diterima dari perangkat lain (jika diperlukan)
+                }
+
+                @Override
+                public void onPayloadTransferUpdate(String endpointId, PayloadTransferUpdate update) {
+                    // Update status transfer data
+                }
+            });
+        }
+
+        @Override
+        public void onConnectionResult(String endpointId, ConnectionResolution result) {
+            if (result.getStatus().isSuccess()) {
+                Toast.makeText(context, "Terhubung dengan perangkat", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(context, "Koneksi gagal", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        public void onDisconnected(String endpointId) {
+            // Ketika perangkat terputus
+            Toast.makeText(context, "Perangkat terputus", Toast.LENGTH_SHORT).show();
+        }
+    };
 }
