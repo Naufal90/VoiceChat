@@ -31,7 +31,6 @@ public class PermissionUtils {
             Manifest.permission.VIBRATE,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.CHANGE_WIFI_MULTICAST_STATE,
-            Manifest.permission.ACCESS_VPN_STATE, // Pastikan permission ini diperlukan
             Manifest.permission.BLUETOOTH,
             Manifest.permission.BLUETOOTH_ADMIN
         };
