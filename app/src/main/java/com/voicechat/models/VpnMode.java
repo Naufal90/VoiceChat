@@ -1,42 +1,42 @@
 package com.voicechat.models;
 
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.widget.Toast;
 
+import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.connection.ConnectionsClient;
-import com.google.android.gms.nearby.connection.EndpointDiscoveryCallback;
-import com.google.android.gms.nearby.connection.DiscoveredEndpointInfo;
-import com.google.android.gms.nearby.connection.ConnectionLifecycleCallback;
 import com.google.android.gms.nearby.connection.ConnectionInfo;
+import com.google.android.gms.nearby.connection.ConnectionLifecycleCallback;
 import com.google.android.gms.nearby.connection.Payload;
 import com.google.android.gms.nearby.connection.PayloadCallback;
-import com.google.android.gms.nearby.connection.DiscoveryOptions;
 import com.google.android.gms.nearby.connection.Strategy;
+import com.google.android.gms.nearby.connection.EndpointDiscoveryCallback;
+import com.google.android.gms.nearby.connection.DiscoveryOptions;
+import com.google.android.gms.nearby.connection.DiscoveredEndpointInfo;
+import com.google.android.gms.nearby.connection.ConnectionResolution;
+import com.google.android.gms.nearby.connection.PayloadTransferUpdate;
 
 public class VpnMode {
     private Context context;
     private ConnectionsClient connectionsClient;
-    private static final String PREF_NAME = "VpnStatusPrefs";
-    private static final String PREF_VPN_STATUS = "vpn_status";
 
     public VpnMode(Context context) {
-        this.context = context;
+        this.context = context; // Pastikan context diinisialisasi dengan benar
         this.connectionsClient = Nearby.getConnectionsClient(context);
     }
 
-    // Fungsi untuk memeriksa status koneksi VPN (menggunakan SharedPreferences)
+    // Fungsi untuk memeriksa status koneksi VPN
     public boolean isVpnConnected() {
-        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        return prefs.getBoolean(PREF_VPN_STATUS, false); // Mengambil status VPN
-    }
-
-    // Fungsi untuk menyimpan status VPN (setelah terhubung atau terputus)
-    public void setVpnStatus(boolean isConnected) {
-        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean(PREF_VPN_STATUS, isConnected);
-        editor.apply();
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm != null) {
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+            if (activeNetwork != null && activeNetwork.getType() == ConnectivityManager.TYPE_VPN) {
+                return true; // VPN terhubung
+            }
+        }
+        return false; // VPN tidak terhubung
     }
 
     // Fungsi untuk menghubungkan dengan perangkat yang berada dalam VPN yang sama
@@ -80,10 +80,12 @@ public class VpnMode {
     private final ConnectionLifecycleCallback connectionLifecycleCallback = new ConnectionLifecycleCallback() {
         @Override
         public void onConnectionInitiated(String endpointId, ConnectionInfo connectionInfo) {
+            // Menanggapi permintaan koneksi dan menerima koneksi
             connectionsClient.acceptConnection(endpointId, new PayloadCallback() {
                 @Override
                 public void onPayloadReceived(String endpointId, Payload payload) {
                     // Proses data yang diterima dari perangkat lain
+                    // Misalnya, menerima data suara atau informasi lainnya
                 }
 
                 @Override
@@ -96,14 +98,17 @@ public class VpnMode {
         @Override
         public void onConnectionResult(String endpointId, ConnectionResolution result) {
             if (result.getStatus().isSuccess()) {
+                // Koneksi berhasil
                 Toast.makeText(context, "Terhubung dengan perangkat", Toast.LENGTH_SHORT).show();
             } else {
+                // Koneksi gagal
                 Toast.makeText(context, "Koneksi gagal", Toast.LENGTH_SHORT).show();
             }
         }
 
         @Override
         public void onDisconnected(String endpointId) {
+            // Ketika perangkat terputus
             Toast.makeText(context, "Perangkat terputus", Toast.LENGTH_SHORT).show();
         }
     };
