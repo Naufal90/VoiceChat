@@ -23,6 +23,7 @@ public class VpnMode {
     private ConnectionsClient connectionsClient;
 
     public VpnMode(Context context) {
+        this.context = context; // Pastikan context diinisialisasi dengan benar
         this.connectionsClient = Nearby.getConnectionsClient(context);
     }
 
@@ -50,42 +51,39 @@ public class VpnMode {
 
     // Fungsi untuk memulai pencarian perangkat di jaringan VPN menggunakan mDNS
     private void startDeviceDiscovery() {
-    // ID layanan yang digunakan untuk Nearby Connections
-    String serviceId = "com.voicechat.service";
+        String serviceId = "com.voicechat.service";
 
-    // Menggunakan Nearby Connections API dengan Strategy yang sesuai
-    connectionsClient.startDiscovery(
-            serviceId,
-            new EndpointDiscoveryCallback() {
-                @Override
-                public void onEndpointFound(String endpointId, DiscoveredEndpointInfo info) {
-                    // Mendapatkan nama perangkat dari DiscoveredEndpointInfo
-                    String endpointName = info.getEndpointName();
-                    Toast.makeText(context, "Perangkat ditemukan: " + endpointName, Toast.LENGTH_SHORT).show();
+        connectionsClient.startDiscovery(
+                serviceId,
+                new EndpointDiscoveryCallback() {
+                    @Override
+                    public void onEndpointFound(String endpointId, DiscoveredEndpointInfo info) {
+                        // Mendapatkan nama perangkat dari DiscoveredEndpointInfo
+                        String endpointName = info.getEndpointName();
+                        Toast.makeText(context, "Perangkat ditemukan: " + endpointName, Toast.LENGTH_SHORT).show();
 
-                    // Meminta koneksi ke perangkat yang ditemukan
-                    connectionsClient.requestConnection("MyDevice", endpointId, connectionLifecycleCallback);
-                }
+                        // Meminta koneksi ke perangkat yang ditemukan
+                        connectionsClient.requestConnection("MyDevice", endpointId, connectionLifecycleCallback);
+                    }
 
-                @Override
-                public void onEndpointLost(String endpointId) {
-                    // Ketika perangkat hilang dari jaringan
-                    Toast.makeText(context, "Perangkat hilang", Toast.LENGTH_SHORT).show();
-                }
-            },
-            new DiscoveryOptions.Builder().setStrategy(Strategy.P2P_CLUSTER).build() // Menggunakan strategi P2P_CLUSTER
-    );
-}
+                    @Override
+                    public void onEndpointLost(String endpointId) {
+                        // Ketika perangkat hilang dari jaringan
+                        Toast.makeText(context, "Perangkat hilang", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                new DiscoveryOptions.Builder().setStrategy(Strategy.P2P_CLUSTER).build()
+        );
+    }
 
     // Callback untuk mengelola siklus koneksi perangkat yang ditemukan
     private final ConnectionLifecycleCallback connectionLifecycleCallback = new ConnectionLifecycleCallback() {
         @Override
         public void onConnectionInitiated(String endpointId, ConnectionInfo connectionInfo) {
-            // Ketika koneksi dimulai
             connectionsClient.acceptConnection(endpointId, new PayloadCallback() {
                 @Override
                 public void onPayloadReceived(String endpointId, Payload payload) {
-                    // Proses data yang diterima dari perangkat lain (jika diperlukan)
+                    // Proses data yang diterima dari perangkat lain
                 }
 
                 @Override
@@ -106,7 +104,6 @@ public class VpnMode {
 
         @Override
         public void onDisconnected(String endpointId) {
-            // Ketika perangkat terputus
             Toast.makeText(context, "Perangkat terputus", Toast.LENGTH_SHORT).show();
         }
     };
@@ -119,6 +116,4 @@ public class VpnMode {
             Toast.makeText(context, "VPN tidak terhubung", Toast.LENGTH_SHORT).show();
         }
     }
-
-    // Menutup class VpnMode dengan tanda kurung penutup
 }
