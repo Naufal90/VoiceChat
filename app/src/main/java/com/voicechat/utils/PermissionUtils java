@@ -35,6 +35,10 @@ public class PermissionUtils {
         Manifest.permission.BLUETOOTH_ADMIN
     };
 
+public static void requestPermissions(Activity activity, String[] permissions, int requestCode) {
+        ActivityCompat.requestPermissions(activity, permissions, requestCode);
+    }
+
     // Meminta izin untuk mengakses berbagai fitur
     public static void requestPermissions(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
