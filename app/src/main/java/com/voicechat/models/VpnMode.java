@@ -14,6 +14,7 @@ import com.google.android.gms.nearby.connection.Strategy;
 import com.google.android.gms.nearby.connection.EndpointDiscoveryCallback;
 import com.google.android.gms.nearby.connection.DiscoveredEndpointInfo;
 import com.google.android.gms.nearby.connection.ConnectionResolution;
+import com.google.android.gms.nearby.connection.PayloadTransferUpdate;
 
 public class VpnMode {
     private Context context;
