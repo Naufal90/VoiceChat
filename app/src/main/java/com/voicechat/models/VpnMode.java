@@ -59,7 +59,7 @@ public class VpnMode {
             serviceId,
             new EndpointDiscoveryCallback() {
                 @Override
-                public void onEndpointFound(String endpointId, String deviceName, String serviceId) {
+                public void onEndpointFound(String endpointId, DiscoveredEndpointInfo info) {
                     // Ketika perangkat ditemukan, lakukan koneksi
                     Toast.makeText(context, "Perangkat ditemukan: " + deviceName, Toast.LENGTH_SHORT).show();
                     // Lakukan koneksi lebih lanjut jika diperlukan
