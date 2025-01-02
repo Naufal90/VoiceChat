@@ -45,7 +45,7 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
     private static final String AUDIO_FILE_PATH = "/storage/emulated/0/VoiceChat/audio_file.3gp";
-    private static final String TAG = "VoiceChatApp";
+    private static final String TAG = "VoiceChat";
 
     private OfflineMode offlineMode;
     private ClientMode clientMode;
@@ -128,11 +128,9 @@ public class MainActivity extends AppCompatActivity {
         playButton.setOnClickListener(v -> startPlaying());
         stopPlayButton.setOnClickListener(v -> stopPlaying());
         sendButton.setOnClickListener(v -> sendCommand());
-        startHotspotButton.setOnClickListener(v -> startHotspot());
-        connectButton.setOnClickListener(v -> connectToHotspot("SSID_HOTSPOT", "PASSWORD_HOTSPOT"));
     }
 
-        @Override
+    @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
@@ -166,7 +164,6 @@ public class MainActivity extends AppCompatActivity {
             player = null;
         }
     }
-}
 
     private void startRecording() {
         try {
@@ -223,6 +220,23 @@ public class MainActivity extends AppCompatActivity {
             showErrorToast("Gagal memutar audio");
         }
     }
+
+    private void stopPlaying() {
+        if (player != null) {
+            player.stop();
+            player.release();
+            player = null;
+            showSuccessToast("Pemutaran dihentikan");
+        }
+    }
+
+    private void sendCommand() {
+        // Implementasi pengiriman perintah ke plugin atau server
+        String serverUrl = etServerUrl.getText().toString();
+        String command = etCommand.getText().toString();
+        pluginMode.sendDataToPlugin(serverUrl, command);
+    }
+            }
     @Override
 public boolean onCreateOptionsMenu(Menu menu) {
     getMenuInflater().inflate(R.menu.menu_help, menu);
