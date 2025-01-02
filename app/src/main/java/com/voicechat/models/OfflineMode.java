@@ -42,6 +42,17 @@ public class OfflineMode {
         }
     }
 
+    // Fungsi untuk menghentikan hotspot
+    public void stopHotspot() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            // Hotspot tidak dapat dihentikan langsung melalui API, bisa menggunakan metode manual
+            Toast.makeText(context, "Hotspot perlu dihentikan secara manual.", Toast.LENGTH_SHORT).show();
+        } else {
+            // Untuk API di bawah 26, bisa mengandalkan metode root atau cara manual
+            Toast.makeText(context, "API tidak mendukung penghentian hotspot secara otomatis.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     // Fungsi untuk memeriksa status hotspot
     public void verifyHotspotStatus() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
