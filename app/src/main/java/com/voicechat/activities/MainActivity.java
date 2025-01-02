@@ -67,8 +67,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (!PermissionUtils.isPermissionGranted(this, PermissionUtils.getRequiredPermissions())) {
+        if (!PermissionUtils.isPermissionGranted(this)) {
     PermissionUtils.requestPermissions(this);
+    // Logika tambahan jika diperlukan, misalnya memberi tahu pengguna
         }
 
         offlineMode = new OfflineMode(this);
