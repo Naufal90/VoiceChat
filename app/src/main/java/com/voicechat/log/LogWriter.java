@@ -4,6 +4,7 @@ import android.content.Context;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import android.util.Log;
 
 public class LogWriter {
     private final File logDirectory;
@@ -18,6 +19,12 @@ public class LogWriter {
         }
         logFile = new File(logDirectory, "app_log.txt");
     }
+
+    public class LogWriter {
+    public void writerLog(String message) {
+        Log.d("LogWriter", message);
+    }
+}
 
     public void writeLog(String message) {
         System.out.println(message); // Cetak log ke konsol
