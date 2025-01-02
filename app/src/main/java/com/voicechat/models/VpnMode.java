@@ -49,20 +49,20 @@ public class VpnMode {
 
     // Fungsi untuk memulai pencarian perangkat di jaringan VPN menggunakan mDNS
     private void startDeviceDiscovery() {
-    // Menggunakan Nearby Connections API untuk menemukan perangkat dalam jaringan yang sama
-    String serviceId = "com.voicechat.service"; // ID layanan mDNS
+    // ID layanan yang digunakan untuk Nearby Connections
+    String serviceId = "com.voicechat.service";
 
-    // Menambahkan konfigurasi Strategy
-    Strategy strategy = new Strategy(Strategy.TETHERING, Strategy.P2P_CLUSTER);
-
+    // Menggunakan Nearby Connections API dengan Strategy yang sesuai
     connectionsClient.startDiscovery(
             serviceId,
             new EndpointDiscoveryCallback() {
                 @Override
                 public void onEndpointFound(String endpointId, DiscoveredEndpointInfo info) {
-                    // Ketika perangkat ditemukan, lakukan koneksi
+                    // Mendapatkan nama perangkat dari DiscoveredEndpointInfo
+                    String deviceName = info.getEndpointName();
                     Toast.makeText(context, "Perangkat ditemukan: " + deviceName, Toast.LENGTH_SHORT).show();
-                    // Lakukan koneksi lebih lanjut jika diperlukan
+
+                    // Meminta koneksi ke perangkat yang ditemukan
                     connectionsClient.requestConnection("MyDevice", endpointId, connectionLifecycleCallback);
                 }
 
@@ -72,7 +72,7 @@ public class VpnMode {
                     Toast.makeText(context, "Perangkat hilang", Toast.LENGTH_SHORT).show();
                 }
             },
-            strategy // Menambahkan strategy yang telah diatur
+            new DiscoveryOptions.Builder().setStrategy(Strategy.P2P_CLUSTER).build() // Menggunakan strategi P2P_CLUSTER
     );
 }
 
