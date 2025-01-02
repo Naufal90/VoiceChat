@@ -131,12 +131,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        // Menangani hasil permintaan izin
-        PermissionUtils.handlePermissionResult(requestCode, permissions, grantResults, this);
-    }
+public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    PermissionUtils.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+}
 
     private void showSuccessToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
