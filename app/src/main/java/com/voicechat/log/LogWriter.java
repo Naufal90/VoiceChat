@@ -23,7 +23,6 @@ public class LogWriter {
     public void writerLog(String message) {
         Log.d("LogWriter", message);
     }
-}
 
     public void writeLog(String message) {
         System.out.println(message); // Cetak log ke konsol
