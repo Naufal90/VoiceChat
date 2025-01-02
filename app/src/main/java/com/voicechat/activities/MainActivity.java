@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
         if (!PermissionUtils.isPermissionGranted(this)) {
             PermissionUtils.requestPermissions(this);
         }
+    }
 
         offlineMode = new OfflineMode(this);
         clientMode = new ClientMode(this);
@@ -134,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
 public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     PermissionUtils.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
 }
 
     private void showSuccessToast(String message) {
