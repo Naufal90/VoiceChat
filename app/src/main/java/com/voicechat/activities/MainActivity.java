@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         String command = "{ \"action\": \"start\" }";
         pluginMode.sendDataToPlugin(serverUrl, command);
 
-        logWriter.writerLog("Aplikasi Dimulai");
+        logWriter.writeLog("Aplikasi Dimulai");
 
         // Inisialisasi AdMob
         MobileAds.initialize(this, initializationStatus -> {});
