@@ -47,16 +47,10 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <!-- Declare VPN service -->
-        <service
-            android:name=".MyVpnService"  <!-- Nama kelas yang mengimplementasikan VpnService -->
-            android:permission="android.permission.BIND_VPN_SERVICE">
+        </activity>      <!-- Declare VPN service -->
+        <service>
             <intent-filter>
-                <action android:name="android.net.VpnService" />
             </intent-filter>
         </service>
-
     </application>
 </manifest>
