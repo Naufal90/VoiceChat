@@ -1,42 +1,42 @@
 package com.voicechat.models;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.content.SharedPreferences;
 import android.widget.Toast;
 
-import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.connection.ConnectionsClient;
-import com.google.android.gms.nearby.connection.ConnectionInfo;
+import com.google.android.gms.nearby.connection.EndpointDiscoveryCallback;
+import com.google.android.gms.nearby.connection.DiscoveredEndpointInfo;
 import com.google.android.gms.nearby.connection.ConnectionLifecycleCallback;
+import com.google.android.gms.nearby.connection.ConnectionInfo;
 import com.google.android.gms.nearby.connection.Payload;
 import com.google.android.gms.nearby.connection.PayloadCallback;
-import com.google.android.gms.nearby.connection.Strategy;
-import com.google.android.gms.nearby.connection.EndpointDiscoveryCallback;
 import com.google.android.gms.nearby.connection.DiscoveryOptions;
-import com.google.android.gms.nearby.connection.DiscoveredEndpointInfo;
-import com.google.android.gms.nearby.connection.ConnectionResolution;
-import com.google.android.gms.nearby.connection.PayloadTransferUpdate;
+import com.google.android.gms.nearby.connection.Strategy;
 
 public class VpnMode {
     private Context context;
     private ConnectionsClient connectionsClient;
+    private static final String PREF_NAME = "VpnStatusPrefs";
+    private static final String PREF_VPN_STATUS = "vpn_status";
 
     public VpnMode(Context context) {
-        this.context = context; // Pastikan context diinisialisasi dengan benar
+        this.context = context;
         this.connectionsClient = Nearby.getConnectionsClient(context);
     }
 
-    // Fungsi untuk memeriksa status koneksi VPN
+    // Fungsi untuk memeriksa status koneksi VPN (menggunakan SharedPreferences)
     public boolean isVpnConnected() {
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (cm != null) {
-            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-            if (activeNetwork != null && activeNetwork.getType() == ConnectivityManager.TYPE_VPN) {
-                return true; // VPN terhubung
-            }
-        }
-        return false; // VPN tidak terhubung
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return prefs.getBoolean(PREF_VPN_STATUS, false); // Mengambil status VPN
+    }
+
+    // Fungsi untuk menyimpan status VPN (setelah terhubung atau terputus)
+    public void setVpnStatus(boolean isConnected) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(PREF_VPN_STATUS, isConnected);
+        editor.apply();
     }
 
     // Fungsi untuk menghubungkan dengan perangkat yang berada dalam VPN yang sama
