@@ -59,7 +59,7 @@ public class VpnMode {
                 @Override
                 public void onEndpointFound(String endpointId, DiscoveredEndpointInfo info) {
                     // Mendapatkan nama perangkat dari DiscoveredEndpointInfo
-                    String deviceName = info.getEndpointName();
+                    String endpointName = info.getEndpointName();
                     Toast.makeText(context, "Perangkat ditemukan: " + endpointName, Toast.LENGTH_SHORT).show();
 
                     // Meminta koneksi ke perangkat yang ditemukan
