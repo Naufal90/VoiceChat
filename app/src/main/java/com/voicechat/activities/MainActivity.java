@@ -201,29 +201,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startPlaying() {
-    File audioFile = new File(AUDIO_FILE_PATH);
-    if (!audioFile.exists()) {
-        Toast.makeText(this, "File audio tidak ditemukan", Toast.LENGTH_SHORT).show();
-        return;
-    }
+        File audioFile = new File(AUDIO_FILE_PATH);
+        if (!audioFile.exists()) {
+            Toast.makeText(this, "File audio tidak ditemukan", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-    if (player != null) {
-        player.stop();
-        player.release();
-    }
+        if (player != null) {
+            player.stop();
+            player.release();
+        }
 
-    player = new MediaPlayer();
-    try {
-        player.setDataSource(audioFile.getAbsolutePath());
-        player.prepare();
-        player.start();
-        showSuccessToast("Pemutaran dimulai");
-    } catch (IOException e) {
-        e.printStackTrace();
-        showErrorToast("Gagal memutar audio");
+        player = new MediaPlayer();
+        try {
+            player.setDataSource(audioFile.getAbsolutePath());
+            player.prepare();
+            player.start();
+            showSuccessToast("Pemutaran dimulai");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorToast("Gagal memutar audio");
+        }
     }
-    }
-
     @Override
 public boolean onCreateOptionsMenu(Menu menu) {
     getMenuInflater().inflate(R.menu.menu_help, menu);
