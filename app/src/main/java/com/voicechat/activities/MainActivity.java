@@ -139,32 +139,32 @@ public class MainActivity extends AppCompatActivity {
         // Menangani hasil permintaan izin
         PermissionUtils.handlePermissionResult(requestCode, permissions, grantResults, this);
     }
+
+    private void showSuccessToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-        private void showSuccessToast(String message) {
-    Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-}
-
-private void showErrorToast(String message) {
-    Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-}
+    private void showErrorToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
 
     @Override
-protected void onDestroy() {
-    super.onDestroy();
-    // Menghentikan hotspot
-    offlineMode.stopHotspot();
-    logWriter.writerLog("Aplikasi Dihentikan");
+    protected void onDestroy() {
+        super.onDestroy();
+        // Menghentikan hotspot
+        offlineMode.stopHotspot();
+        logWriter.writerLog("Aplikasi Dihentikan");
 
-    // Pastikan untuk melepaskan resource recorder dan player
-    if (recorder != null) {
-        recorder.release();
-        recorder = null;
-    }
+        // Pastikan untuk melepaskan resource recorder dan player
+        if (recorder != null) {
+            recorder.release();
+            recorder = null;
+        }
 
-    if (player != null) {
-        player.release();
-        player = null;
+        if (player != null) {
+            player.release();
+            player = null;
+        }
     }
 }
 
