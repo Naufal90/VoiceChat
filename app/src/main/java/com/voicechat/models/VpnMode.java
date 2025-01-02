@@ -117,3 +117,4 @@ public class VpnMode {
         Toast.makeText(context, "VPN tidak terhubung", Toast.LENGTH_SHORT).show();
     }
 }
+}
