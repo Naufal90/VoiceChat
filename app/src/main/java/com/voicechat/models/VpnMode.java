@@ -1,6 +1,8 @@
 package com.voicechat.models;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.widget.Toast;
 
 public class VpnMode {
@@ -12,10 +14,14 @@ public class VpnMode {
 
     // Fungsi untuk memeriksa status koneksi VPN
     public boolean isVpnConnected() {
-        // Cek status koneksi VPN, misalnya dengan menggunakan VPN API atau status koneksi jaringan
-        // Jika VPN terhubung, kembalikan true
-        // Jika tidak terhubung, kembalikan false
-        return true; // Gantilah dengan logika yang sesuai
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm != null) {
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+            if (activeNetwork != null && activeNetwork.getType() == ConnectivityManager.TYPE_VPN) {
+                return true; // VPN terhubung
+            }
+        }
+        return false; // VPN tidak terhubung
     }
 
     // Fungsi untuk menghubungkan dengan perangkat yang berada dalam VPN yang sama
