@@ -236,8 +236,8 @@ public class MainActivity extends AppCompatActivity {
         String command = etCommand.getText().toString();
         pluginMode.sendDataToPlugin(serverUrl, command);
     }
-            }
-     @Override
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_help, menu);
         return true;
@@ -273,4 +273,4 @@ public class MainActivity extends AppCompatActivity {
                .setPositiveButton("OK", null)
                .show();
     }
-                           }
+}
