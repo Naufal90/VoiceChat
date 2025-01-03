@@ -85,8 +85,17 @@ public class MainActivity extends AppCompatActivity {
 
         offlineMode = new OfflineMode(MainActivity.this);
         clientMode = new ClientMode();
-        pluginMode = new PluginMode(this);
-        vpnMode = new VpnMode(this);
+        PluginMode pluginMode = new PluginMode(this);
+
+// Contoh mode dipilih
+String selectedMode = "plugin";
+String serverUrl = "http://your-server-url/plugin-endpoint";
+String command = "{\"action\":\"sendMessage\",\"message\":\"Hello Plugin!\"}";
+
+// Memeriksa dan mengirim data ke plugin
+pluginMode.checkPluginMode(selectedMode, serverUrl, command);
+        VpnMode vpnMode = new VpnMode(this);
+vpnMode.checkVPNMode(selectedMode);
         logWriter = new LogWriter(this);
 
         offlineMode.startServer();
