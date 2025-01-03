@@ -69,17 +69,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Memeriksa apakah izin yang diperlukan sudah diberikan
     if (!PermissionUtils.isPermissionGranted(this)) {
-        // Jika izin belum diberikan, langsung meminta izin
-        PermissionUtils.requestPermissions(this);
-    } else {
-        // Jika izin sudah diberikan, langsung tampilkan mode selection UI
-        showModeSelectionDialog();
+            PermissionUtils.requestPermissions(this);
     }
-}
-
-    // Menampilkan dialog
-    builder.create().show();
-        }
 
         offlineMode = new OfflineMode(this);
         clientMode = new ClientMode(this);
