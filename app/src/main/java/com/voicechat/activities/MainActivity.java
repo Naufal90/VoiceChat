@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
             PermissionUtils.requestPermissions(this);
     }
 
-        offlineMode = new OfflineMode();
+        offlineMode = new OfflineMode(MainActivity.this);
         clientMode = new ClientMode();
         pluginMode = new PluginMode(this);
         vpnMode = new VpnMode(this);
