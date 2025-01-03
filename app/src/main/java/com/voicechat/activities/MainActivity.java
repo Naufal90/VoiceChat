@@ -282,16 +282,7 @@ private void stopPlaying() {
         audioPlayer = null;
         showSuccessToast("Pemutaran dihentikan");
     }
-}    showSuccessToast("Perekaman dimulai");
-
-    } catch (IOException e) {
-        e.printStackTrace();
-        showErrorToast("Gagal memulai perekaman");
-    } catch (IllegalStateException e) {
-        e.printStackTrace();
-        showErrorToast("Perekaman dalam kondisi tidak valid");
-    }
-}
+}    
 
 private void stopRecording() {
     if (audioRecorder != null) {
