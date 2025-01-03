@@ -170,13 +170,13 @@
         android:layout_marginTop="20dp"/>
 
     <EditText
-    android:id="@+id/etServerUrl"
+    android:id="@+id/serverUrl"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:hint="Masukkan URL Server" />
 
 <EditText
-    android:id="@+id/etServerPort"
+    android:id="@+id/serverPort"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:hint="Masukkan Port Server"
