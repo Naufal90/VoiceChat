@@ -347,7 +347,6 @@ private void stopRecording() {
                .setPositiveButton("OK", null)
                .show();
     }
-}
 
 // Metode untuk menginisialisasi AdMob
     public void initializeAdMob() {
@@ -361,4 +360,3 @@ private void stopRecording() {
             }
         });
     }
-}
