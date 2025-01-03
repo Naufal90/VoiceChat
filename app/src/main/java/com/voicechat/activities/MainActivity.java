@@ -78,12 +78,6 @@ public class MainActivity extends AppCompatActivity {
         vpnMode = new VpnMode(this);
         logWriter = new LogWriter(this);
 
-        // Memulai hotspot
-        offlineMode.startHotspot();
-
-        // Memeriksa status hotspot
-        offlineMode.verifyHotspotStatus();
-
         VpnMode vpnMode = new VpnMode(getApplicationContext());
 vpnMode.checkVpnConnection();
 
