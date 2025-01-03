@@ -59,4 +59,18 @@ public class PluginMode {
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
         );
     }
+
+    // Fungsi untuk mengecek mode plugin
+    public void checkPluginMode(String selectedMode, String serverUrl, String command) {
+        if (!"plugin".equals(selectedMode)) {
+            return; // Jangan lakukan apapun jika mode bukan plugin
+        }
+
+        try {
+            // Kirim data ke plugin jika mode adalah plugin
+            sendDataToPlugin(serverUrl, command);
+        } catch (Exception e) {
+            showToast("Gagal mengirim data ke plugin!");
+        }
+    }
 }
