@@ -175,6 +175,13 @@
     android:layout_height="wrap_content"
     android:hint="Masukkan URL Server" />
 
+<EditText
+    android:id="@+id/etServerPort"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:hint="Masukkan Port Server"
+    android:inputType="number" />
+
     <!-- Footer: App Info and Update -->
     <LinearLayout
         android:layout_width="match_parent"
@@ -195,7 +202,7 @@
             android:id="@+id/updateInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Last Update: December 2024"
+            android:text="Author : Naufal90"
             android:textSize="14sp"
             android:textColor="@android:color/darker_gray"/>
     </LinearLayout>
