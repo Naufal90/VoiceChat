@@ -360,4 +360,3 @@ private void stopRecording() {
             }
         });
     }
-}
