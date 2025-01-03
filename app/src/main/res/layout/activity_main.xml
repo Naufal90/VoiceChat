@@ -152,13 +152,6 @@
         android:layout_marginBottom="16dp"/>
 
     <!-- Button untuk men-submit perintah -->
-    <Button
-        android:id="@+id/submitButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Kirim"
-        android:onClick="onSubmitClicked"/>
-    
     <EditText
         android:id="@+id/etCommand"
         android:layout_width="match_parent"
@@ -181,6 +174,13 @@
     android:layout_height="wrap_content"
     android:hint="Masukkan Port Server"
     android:inputType="number" />
+
+    <Button
+        android:id="@+id/submitButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Simpan Host Dan Port"
+        android:onClick="onSubmitClicked"/>
 
     <!-- Footer: App Info and Update -->
     <LinearLayout
