@@ -142,8 +142,6 @@ public void onRequestPermissionsResult(int requestCode, String[] permissions, in
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // Menghentikan hotspot
-        offlineMode.stopHotspot();
         logWriter.writeLog("Aplikasi Dihentikan");
 
         // Pastikan untuk melepaskan resource recorder dan player
