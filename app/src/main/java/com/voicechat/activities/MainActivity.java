@@ -127,10 +127,9 @@ protected void onCreate(Bundle savedInstanceState) {
 
         // Mengirim data ke plugin
         String command = "{\"action\":\"sendMessage\",\"message\":\"Hello Plugin!\"}";
-        pluginMode.sendDataToPlugin(serverUrl, command);
-    } 
+        pluginMode.sendDataToPlugin(serverUrl, command); 
     // Jika mode offline atau vpn, gunakan deteksi otomatis
-    else {
+        } else {
         if (selectedMode.equals("offline")) {
             // Deteksi otomatis server untuk offline mode
             audioRecorder = new AudioRecorder(InetAddress.getLoopbackAddress(), 12345);  // Contoh alamat localhost dan port default
@@ -186,6 +185,7 @@ protected void onCreate(Bundle savedInstanceState) {
         stopPlayButton.setOnClickListener(v -> audioPlayer.stop());
         sendButton.setOnClickListener(v -> sendCommand());
     }
+}
 
     @Override
 public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
