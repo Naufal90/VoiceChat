@@ -67,59 +67,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (!PermissionUtils.isPermissionGranted(this)) {
-    // Jika izin belum diberikan, minta izin
-    PermissionUtils.requestPermissions(this, new PermissionUtils.PermissionResultCallback() {
-        @Override
-        public void onPermissionGranted() {
-            // Setelah izin diberikan, tampilkan dialog pemilihan mode
-            showModeSelectionDialog();
-        }
-
-        @Override
-        public void onPermissionDenied(String[] deniedPermissions) {
-            // Menampilkan pesan jika izin ditolak
-            Toast.makeText(MainActivity.this, "Izin lokasi diperlukan untuk aplikasi ini.", Toast.LENGTH_SHORT).show();
-        }
-    });
-} else {
-    // Jika izin sudah diberikan, langsung tampilkan dialog pemilihan mode
-    showModeSelectionDialog();
-        }
-
-        private void showModeSelectionDialog() {
-    // Membuat dialog pemilihan mode
-    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    builder.setTitle("Pilih Mode");
-
-    // Daftar opsi mode
-    String[] modes = {"Offline Mode", "Plugin Mode", "VPN Mode", "Batal"};
-
-    builder.setItems(modes, (dialog, which) -> {
-        switch (which) {
-            case 0: // Offline Mode
-                offlineMode.startHotspot();
-                Toast.makeText(this, "Offline Mode dipilih.", Toast.LENGTH_SHORT).show();
-                break;
-
-            case 1: // Plugin Mode
-                // Implementasi untuk Plugin Mode
-                pluginMode.configurePlugin();
-                Toast.makeText(this, "Plugin Mode dipilih.", Toast.LENGTH_SHORT).show();
-                break;
-
-            case 2: // VPN Mode
-                // Implementasi untuk VPN Mode
-                vpnMode.checkVpnConnection();
-                Toast.makeText(this, "VPN Mode dipilih.", Toast.LENGTH_SHORT).show();
-                break;
-
-            case 3: // Batal
-                // Tidak melakukan apa-apa
-                dialog.dismiss();
-                break;
-        }
-    });
+        // Memeriksa apakah izin yang diperlukan sudah diberikan
+    if (!PermissionUtils.isPermissionGranted(this)) {
+        // Jika izin belum diberikan, langsung meminta izin
+        PermissionUtils.requestPermissions(this);
+    } else {
+        // Jika izin sudah diberikan, langsung tampilkan mode selection UI
+        showModeSelectionDialog();
+    }
+}
 
     // Menampilkan dialog
     builder.create().show();
