@@ -116,6 +116,8 @@ protected void onCreate(Bundle savedInstanceState) {
 
     // Jika mode plugin, ambil input dari pengguna
     if (selectedMode.equals("plugin")) {
+        Button submitButton = findViewById(R.id.submitButton);
+        submitButton.setOnClickListener(v -> {
         String serverUrl = serverUrlEditText.getText().toString();
         int serverPort = Integer.parseInt(serverPortEditText.getText().toString());
 
