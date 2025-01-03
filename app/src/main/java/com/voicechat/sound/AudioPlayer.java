@@ -14,10 +14,11 @@ public class AudioPlayer {
     private int bufferSize;
     private boolean isReceiving;
 
-    public AudioPlayer() {
-        initAudioTrack();
-        initSocket();
-    }
+    public AudioPlayer(String filePath) {
+    initAudioTrack();
+    initSocket();
+    // Lakukan sesuatu dengan filePath jika diperlukan
+}
 
     // Inisialisasi AudioTrack untuk pemutaran suara
     private void initAudioTrack() {
