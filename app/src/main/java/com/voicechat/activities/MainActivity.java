@@ -72,11 +72,15 @@ public class MainActivity extends AppCompatActivity {
             PermissionUtils.requestPermissions(this);
     }
 
-        offlineMode = new OfflineMode(this);
-        clientMode = new ClientMode(this);
+        offlineMode = new OfflineMode();
+        clientMode = new ClientMode();
         pluginMode = new PluginMode(this);
         vpnMode = new VpnMode(this);
         logWriter = new LogWriter(this);
+
+        offlineMode.startServer();
+
+        clientMode.connectToServer("alamat_server");
 
         VpnMode vpnMode = new VpnMode(getApplicationContext());
 vpnMode.checkVpnConnection();
