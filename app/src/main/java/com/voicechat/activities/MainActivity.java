@@ -62,10 +62,21 @@ public class MainActivity extends AppCompatActivity {
 
     private LogWriter logWriter;
 
+    private void requestStoragePermission() {
+    if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED) {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+    }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        requestStoragePermission();
+    }
 
         // Memeriksa apakah izin yang diperlukan sudah diberikan
     if (!PermissionUtils.isPermissionGranted(this)) {
