@@ -107,27 +107,46 @@ protected void onCreate(Bundle savedInstanceState) {
     pluginMode = new PluginMode(this);
     vpnMode = new VpnMode(this);
 
-    // Contoh mode dipilih
-    String selectedMode = "plugin";
-    String serverUrl = "http://your-server-url/plugin-endpoint";
-    String command = "{\"action\":\"sendMessage\",\"message\":\"Hello Plugin!\"}";
+    // Mengambil input dari pengguna untuk Plugin Mode
+    EditText serverUrlEditText = findViewById(R.id.serverUrl);  // Ambil URL server
+    EditText serverPortEditText = findViewById(R.id.serverPort);  // Ambil port server
 
-    // Memeriksa dan mengirim data ke plugin
-    pluginMode.checkPluginMode(selectedMode, serverUrl, command);
-    vpnMode.checkVPNMode(selectedMode);
+    // Cek apakah mode yang dipilih adalah Plugin Mode
+    String selectedMode = "plugin"; // Atau ambil dari pilihan mode pengguna (misalnya dari spinner)
+
+    // Jika mode plugin, ambil input dari pengguna
+    if (selectedMode.equals("plugin")) {
+        String serverUrl = serverUrlEditText.getText().toString();
+        int serverPort = Integer.parseInt(serverPortEditText.getText().toString());
+
+        // Menginisialisasi AudioRecorder dengan server yang dimasukkan pengguna
+        InetAddress serverAddress = InetAddress.getByName(serverUrl);
+        audioRecorder = new AudioRecorder(serverAddress, serverPort);
+
+        // Mengirim data ke plugin
+        String command = "{\"action\":\"sendMessage\",\"message\":\"Hello Plugin!\"}";
+        pluginMode.sendDataToPlugin(serverUrl, command);
+    } 
+    // Jika mode offline atau vpn, gunakan deteksi otomatis
+    else {
+        if (selectedMode.equals("offline")) {
+            // Deteksi otomatis server untuk offline mode
+            audioRecorder = new AudioRecorder(InetAddress.getLoopbackAddress(), 12345);  // Contoh alamat localhost dan port default
+            offlineMode.startServer();
+        } else if (selectedMode.equals("vpn")) {
+            // Deteksi otomatis server untuk VPN mode
+            audioRecorder = new AudioRecorder(InetAddress.getByName("vpn.server.com"), 12345);  // Ganti dengan server VPN yang sesuai
+            vpnMode.startVPNServer();
+        }
+    }
 
     // Menulis log aplikasi dimulai
     logWriter = new LogWriter(this);
     logWriter.writeLog("Aplikasi Dimulai");
 
-    // Mulai server offlineMode
+    // Memulai server offlineMode atau menghubungkan clientMode
     offlineMode.startServer();
-
-    // Menghubungkan clientMode ke server
     clientMode.connectToServer("alamat_server");
-
-    // Mengirim data ke plugin
-    pluginMode.sendDataToPlugin(serverUrl, command);
 
     // Inisialisasi AdMob
     MobileAds.initialize(this, initializationStatus -> {});
@@ -140,7 +159,6 @@ protected void onCreate(Bundle savedInstanceState) {
     initUI();
 
     // Inisialisasi audio
-    audioRecorder = new AudioRecorder(AUDIO_FILE_PATH);
     audioPlayer = new AudioPlayer(audioFile.getAbsolutePath());
     soundManager = new SoundManager(this, R.raw.sample_audio); // Pastikan file ada di res/raw
 
