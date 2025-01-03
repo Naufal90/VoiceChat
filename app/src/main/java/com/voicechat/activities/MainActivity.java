@@ -231,7 +231,7 @@ protected void onDestroy() {
         // Menampilkan toast untuk memberi tahu pengguna bahwa perekaman telah dimulai
         showSuccessToast("Perekaman dimulai");
 
-     catch (IOException e) {
+    } catch (IOException e) {
         e.printStackTrace();
         showErrorToast("Gagal memulai perekaman");
     } catch (IllegalStateException e) {
@@ -264,7 +264,7 @@ protected void onDestroy() {
         try {
             audioPlayer.startPlaying();
             showSuccessToast("Pemutaran dimulai");
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             showErrorToast("Gagal memutar audio");
         }
