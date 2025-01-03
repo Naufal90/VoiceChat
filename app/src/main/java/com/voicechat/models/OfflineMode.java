@@ -1,5 +1,11 @@
 package com.voicechat.models;
 
+import android.content.Context;
+import android.media.MediaPlayer;
+import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -17,11 +23,10 @@ public class OfflineMode {
         this.context = context;
     }
 
-    // Kemudian gunakan Toast di dalam metode
+    // Fungsi untuk menampilkan toast di UI thread
     public void showToast(String message) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
-}
 
     // Fungsi untuk memulai server dan mendengarkan koneksi client
     public void startServer() {
@@ -42,7 +47,7 @@ public class OfflineMode {
                     @Override
                     public void run() {
                         // Menampilkan pesan toast di UI thread
-                        Toast.makeText(MainActivity.this, "Client terhubung!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Client terhubung!", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -51,7 +56,6 @@ public class OfflineMode {
                 outputStream = clientSocket.getOutputStream();
 
                 // Komunikasi antara host dan client bisa dimulai di sini
-                // Misalnya, menerima data dari client
                 receiveData();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -59,6 +63,32 @@ public class OfflineMode {
         }
     }).start();
 }
+
+    // Fungsi untuk menerima data audio dari client
+    public void receiveData() {
+        byte[] buffer = new byte[1024];
+        try {
+            File receivedFile = new File(context.getExternalFilesDir(null), "received_audio.3gp");
+            FileOutputStream fileOutputStream = new FileOutputStream(receivedFile);
+            
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                fileOutputStream.write(buffer, 0, bytesRead);
+            }
+
+            fileOutputStream.close();
+
+            // Setelah menerima data, kita bisa memutar audio menggunakan MediaPlayer
+            MediaPlayer mediaPlayer = new MediaPlayer();
+            mediaPlayer.setDataSource(receivedFile.getAbsolutePath());
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     // Fungsi untuk mengirim data ke client
     public void sendData(String message) {
         try {
