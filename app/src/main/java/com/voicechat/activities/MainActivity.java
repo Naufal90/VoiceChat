@@ -191,7 +191,6 @@ protected void onDestroy() {
 
     private void startRecording() {
     try {
-        // Membuat folder jika belum ada
         File folder = new File(getExternalFilesDir(null), "VoiceChat");
         if (!folder.exists() && !folder.mkdirs()) {
             showErrorToast("Gagal membuat folder untuk menyimpan audio");
@@ -199,30 +198,48 @@ protected void onDestroy() {
         }
 
         String audioFilePath = new File(folder, "recording.3gp").getAbsolutePath();
-
-        // Inisialisasi AudioRecorder
         audioRecorder = new AudioRecorder(audioFilePath);
         audioRecorder.startRecording();
-    private void startPlaying() {
-    File audioFile = new File(getExternalFilesDir(null), "VoiceChat/recording.3gp");
-    if (!audioFile.exists()) {
-        Toast.makeText(this, "File audio tidak ditemukan", Toast.LENGTH_SHORT).show();
-        return;
-    }
+        showSuccessToast("Perekaman dimulai");
 
-    if (audioPlayer != null) {
-        audioPlayer.stop();
-        audioPlayer.release();
-    }
-
-    try {
-        // Inisialisasi AudioPlayer
-        audioPlayer = new AudioPlayer(audioFile.getAbsolutePath());
-        audioPlayer.startPlaying();
-        showSuccessToast("Pemutaran dimulai");
-    } catch (IOException e) {
+    } catch (IOException | IllegalStateException e) {
         e.printStackTrace();
-        showErrorToast("Gagal memutar audio");
+        showErrorToast("Gagal memulai perekaman");
+    }
+}
+        
+    private void startPlaying() {
+    try {
+        // Menentukan file audio
+        File audioFile = new File(getExternalFilesDir(null), "VoiceChat/recording.3gp");
+        
+        // Memeriksa apakah file audio ada
+        if (!audioFile.exists()) {
+            Toast.makeText(this, "File audio tidak ditemukan", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Jika ada audio player yang aktif, hentikan dan lepaskan
+        if (audioPlayer != null) {
+            audioPlayer.stop();
+            audioPlayer.release();
+        }
+
+        // Inisialisasi AudioPlayer dan mulai pemutaran
+        audioPlayer = new AudioPlayer(audioFile.getAbsolutePath());
+        
+        // Menangani pemutaran audio
+        try {
+            audioPlayer.startPlaying();
+            showSuccessToast("Pemutaran dimulai");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorToast("Gagal memutar audio");
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        showErrorToast("Terjadi kesalahan saat memulai pemutaran");
     }
 }
 
