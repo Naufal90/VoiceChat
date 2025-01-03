@@ -122,16 +122,6 @@ vpnMode.checkVpnConnection();
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
-        startStopButton = findViewById(R.id.startStopButton);
-            startStopButton.setOnClickListener(v -> {
-            if (isRecording) {
-                stopRecording(); // Jika sedang merekam, hentikan
-            } else {
-                startRecording(); // Jika tidak merekam, mulai rekaman
-            }
-        });
-}
-
         // Inisialisasi UI
         initUI();
 
