@@ -202,7 +202,7 @@
 
     <!-- Banner Ad (optional, at bottom) -->
     <com.google.android.gms.ads.AdView
-    android:id="@+id/mAdView"
+    android:id="@+id/AdView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     ads:adSize="BANNER"
