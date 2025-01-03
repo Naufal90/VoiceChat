@@ -1,9 +1,18 @@
 package com.voicechat.sound;
 
+import android.media.AudioFormat;
+import android.media.AudioManager;
+import android.media.AudioTrack;
+
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+
 public class AudioPlayer {
     private AudioTrack audioTrack;
     private DatagramSocket socket;
     private int bufferSize;
+    private boolean isReceiving;
 
     public AudioPlayer() {
         initAudioTrack();
@@ -39,8 +48,9 @@ public class AudioPlayer {
 
     // Mulai menerima dan memutar audio
     public void startReceiving() {
+        isReceiving = true;
         new Thread(() -> {
-            while (true) {
+            while (isReceiving) {
                 byte[] receivedData = receiveAudioData();
                 if (receivedData != null) {
                     audioTrack.write(receivedData, 0, receivedData.length);
@@ -61,4 +71,16 @@ public class AudioPlayer {
             return null;
         }
     }
-}￼Enter
+
+    // Berhenti menerima audio dan melepaskan sumber daya
+    public void stopReceiving() {
+        isReceiving = false;
+        if (socket != null && !socket.isClosed()) {
+            socket.close();
+        }
+        if (audioTrack != null) {
+            audioTrack.stop();
+            audioTrack.release();
+        }
+    }
+}
