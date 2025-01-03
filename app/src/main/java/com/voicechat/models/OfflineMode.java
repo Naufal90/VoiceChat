@@ -14,41 +14,40 @@ public class OfflineMode {
 
     // Fungsi untuk memulai server dan mendengarkan koneksi client
     public void startServer() {
-        try {
-            // Membuka ServerSocket pada port yang ditentukan (misalnya 12345)
-            serverSocket = new ServerSocket(12345);
-            System.out.println("Menunggu koneksi dari client...");
+    new Thread(new Runnable() {
+        @Override
+        public void run() {
+            try {
+                // Membuka ServerSocket pada port yang ditentukan (misalnya 12345)
+                serverSocket = new ServerSocket(12345);
+                System.out.println("Menunggu koneksi dari client...");
 
-            // Menunggu koneksi dari client
-            clientSocket = serverSocket.accept();
-            System.out.println("Client terhubung.");
+                // Menunggu koneksi dari client
+                clientSocket = serverSocket.accept();
+                System.out.println("Client terhubung.");
 
-            // Mempersiapkan InputStream dan OutputStream untuk komunikasi
-            inputStream = clientSocket.getInputStream();
-            outputStream = clientSocket.getOutputStream();
+                // Update UI di thread utama setelah koneksi diterima
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Menampilkan pesan toast di UI thread
+                        Toast.makeText(MainActivity.this, "Client terhubung!", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
-            // Komunikasi antara host dan client bisa dimulai di sini
-            // Misalnya, menerima data dari client
-            receiveData();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+                // Mempersiapkan InputStream dan OutputStream untuk komunikasi
+                inputStream = clientSocket.getInputStream();
+                outputStream = clientSocket.getOutputStream();
 
-    // Fungsi untuk menerima data dari client
-    public void receiveData() {
-        try {
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                String receivedMessage = new String(buffer, 0, bytesRead);
-                System.out.println("Pesan dari client: " + receivedMessage);
+                // Komunikasi antara host dan client bisa dimulai di sini
+                // Misalnya, menerima data dari client
+                receiveData();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-    }
-
+    }).start();
+}
     // Fungsi untuk mengirim data ke client
     public void sendData(String message) {
         try {
