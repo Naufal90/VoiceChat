@@ -42,14 +42,14 @@ public class VpnMode {
     // Fungsi untuk menghubungkan dengan perangkat yang berada dalam VPN yang sama
     public void connectToVpnNetwork() {
         if (isVpnConnected()) {
-            // Mulai pencarian perangkat dalam jaringan VPN yang sama menggunakan mDNS
+            // Mulai pencarian perangkat dalam jaringan VPN yang sama menggunakan Nearby API
             startDeviceDiscovery();
         } else {
             Toast.makeText(context, "VPN tidak terhubung", Toast.LENGTH_SHORT).show();
         }
     }
 
-    // Fungsi untuk memulai pencarian perangkat di jaringan VPN menggunakan mDNS
+    // Fungsi untuk memulai pencarian perangkat di jaringan VPN menggunakan Nearby Connections API
     private void startDeviceDiscovery() {
         String serviceId = "com.voicechat.service";
 
@@ -119,6 +119,20 @@ public class VpnMode {
             Toast.makeText(context, "VPN terhubung", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(context, "VPN tidak terhubung", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // Fungsi untuk mode VPN
+    public void checkVPNMode(String selectedMode) {
+        if (!"vpn".equals(selectedMode)) {
+            return; // Jangan lakukan apapun jika mode bukan VPN
+        }
+
+        // Cek koneksi VPN
+        if (!isVpnConnected()) {
+            Toast.makeText(context, "VPN tidak terhubung", Toast.LENGTH_SHORT).show();
+        } else {
+            connectToVpnNetwork();
         }
     }
 }
