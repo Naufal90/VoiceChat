@@ -194,7 +194,7 @@
             android:id="@+id/appInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="App Version: 1.0"
+            android:text="App Version: Beta Test"
             android:textSize="16sp"
             android:textColor="@android:color/darker_gray"/>
 
