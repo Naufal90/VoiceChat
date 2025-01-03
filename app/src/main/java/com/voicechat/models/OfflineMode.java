@@ -1,5 +1,6 @@
 package com.voicechat.models;
 
+import android.app.Activity;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.widget.Toast;
@@ -20,9 +21,9 @@ public class OfflineMode {
     private OutputStream outputStream;
     private Activity activity;
 
-public OfflineMode(Activity activity) {
-    this.activity = activity;
-}
+    public OfflineMode(Activity activity) {
+        this.activity = activity;
+    }
 
     public OfflineMode(Context context) {
         this.context = context;
@@ -30,44 +31,53 @@ public OfflineMode(Activity activity) {
 
     // Fungsi untuk menampilkan toast di UI thread
     public void showToast(String message) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        if (activity != null) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     // Fungsi untuk memulai server dan mendengarkan koneksi client
     public void startServer() {
-    new Thread(new Runnable() {
-        @Override
-        public void run() {
-            try {
-                // Membuka ServerSocket pada port yang ditentukan (misalnya 12345)
-                serverSocket = new ServerSocket(12345);
-                System.out.println("Menunggu koneksi dari client...");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // Membuka ServerSocket pada port yang ditentukan (misalnya 12345)
+                    serverSocket = new ServerSocket(12345);
+                    System.out.println("Menunggu koneksi dari client...");
 
-                // Menunggu koneksi dari client
-                clientSocket = serverSocket.accept();
-                System.out.println("Client terhubung.");
+                    // Menunggu koneksi dari client
+                    clientSocket = serverSocket.accept();
+                    System.out.println("Client terhubung.");
 
-                // Update UI di thread utama setelah koneksi diterima
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        // Menampilkan pesan toast di UI thread
-                        Toast.makeText(context, "Client terhubung!", Toast.LENGTH_SHORT).show();
+                    // Update UI di thread utama setelah koneksi diterima
+                    if (activity != null) {
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                // Menampilkan pesan toast di UI thread
+                                showToast("Client terhubung!");
+                            }
+                        });
                     }
-                });
 
-                // Mempersiapkan InputStream dan OutputStream untuk komunikasi
-                inputStream = clientSocket.getInputStream();
-                outputStream = clientSocket.getOutputStream();
+                    // Mempersiapkan InputStream dan OutputStream untuk komunikasi
+                    inputStream = clientSocket.getInputStream();
+                    outputStream = clientSocket.getOutputStream();
 
-                // Komunikasi antara host dan client bisa dimulai di sini
-                receiveData();
-            } catch (IOException e) {
-                e.printStackTrace();
+                    // Komunikasi antara host dan client bisa dimulai di sini
+                    receiveData();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-        }
-    }).start();
-}
+        }).start();
+    }
 
     // Fungsi untuk menerima data audio dari client
     public void receiveData() {
@@ -119,4 +129,4 @@ public OfflineMode(Activity activity) {
             e.printStackTrace();
         }
     }
-}
+                }
