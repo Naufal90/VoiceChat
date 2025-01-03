@@ -19,21 +19,13 @@ public class AudioRecorder {
     private int serverPort;
     private boolean isRecording;
 
-    // Untuk mode Plugin (memasukkan alamat server dan port dari pengguna)
-public AudioRecorder(InetAddress serverAddress, int serverPort) {
-    this.serverAddress = serverAddress;  // Alamat server yang dimasukkan oleh pengguna
-    this.serverPort = serverPort;        // Port server yang dimasukkan oleh pengguna
-    initAudioRecord();
-    initSocket();
-}
-
-// Untuk mode Offline atau VPN (menggunakan loopback address dan port default)
-public AudioRecorder() {
-    this.serverAddress = InetAddress.getLoopbackAddress(); // Loopback address untuk offline
-    this.serverPort = 12345;  // Port default untuk offline atau VPN
-    initAudioRecord();
-    initSocket();
-}
+    // Menambahkan parameter serverAddress dan serverPort
+    public AudioRecorder(InetAddress serverAddress, int serverPort) {
+        this.serverAddress = serverAddress;
+        this.serverPort = serverPort;
+        initAudioRecord();
+        initSocket();
+    }
 
     // Inisialisasi AudioRecord untuk perekaman
     private void initAudioRecord() {
