@@ -259,10 +259,16 @@ private void stopRecording() {
 }
 
     private void sendCommand() {
-        // Implementasi pengiriman perintah ke plugin atau server
-        String serverUrl = etServerUrl.getText().toString();
-        String command = etCommand.getText().toString();
-        pluginMode.sendDataToPlugin(serverUrl, command);
+    String serverUrl = etServerUrl.getText().toString().trim();
+    String command = etCommand.getText().toString().trim();
+
+    if (serverUrl.isEmpty() || command.isEmpty()) {
+        showErrorToast("URL server dan perintah tidak boleh kosong");
+        return;
+    }
+
+    pluginMode.sendDataToPlugin(serverUrl, command);
+    showSuccessToast("Perintah dikirim");
     }
 
     @Override
