@@ -1,62 +1,65 @@
 package com.voicechat.models;
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
-import android.widget.Toast;
-import androidx.appcompat.app.AlertDialog;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
 
 public class ClientMode {
-    private Context context;
-    private WifiManager wifiManager;
+    private Socket socket;
+    private OutputStream outputStream;
+    private InputStream inputStream;
 
-    public ClientMode(Context context) {
-        this.context = context;
-        wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-    }
+    // Fungsi untuk menghubungkan ke host (server)
+    public void connectToServer(String host) {
+        try {
+            socket = new Socket(host, 12345); // Menghubungkan ke host di port 12345
+            outputStream = socket.getOutputStream();
+            inputStream = socket.getInputStream();
+            System.out.println("Terhubung ke server.");
 
-    // Fungsi untuk memulai koneksi ke hotspot
-    public void connectToHotspot(String hotspotSSID) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            // Jika perangkat menggunakan Android Q atau lebih tinggi, arahkan pengguna untuk menghubungkan secara manual
-            Toast.makeText(context,
-                "Silakan hubungkan perangkat Anda secara manual ke hotspot \"" 
-                + hotspotSSID + "\" melalui pengaturan Wi-Fi sebelum melanjutkan.",
-                Toast.LENGTH_LONG).show();
+            // Komunikasi antara client dan host bisa dimulai di sini
+            // Misalnya, mengirim data ke server atau menerima data
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    // Fungsi untuk memeriksa apakah perangkat sudah terhubung ke hotspot
-    public boolean isConnectedToHotspot(String hotspotSSID) {
-        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-        if (wifiInfo != null) {
-            String currentSSID = wifiInfo.getSSID();
-            // Periksa apakah SSID yang terhubung sesuai dengan SSID hotspot
-            return currentSSID != null && currentSSID.equals("\"" + hotspotSSID + "\"");
+    // Fungsi untuk menghentikan koneksi
+    public void disconnect() {
+        try {
+            if (socket != null) {
+                socket.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return false;
     }
 
-    // Fungsi untuk memeriksa koneksi dan memberikan peringatan jika belum terhubung
-    public void verifyConnection(String hotspotSSID) {
-        if (!isConnectedToHotspot(hotspotSSID)) {
-            // Jika perangkat belum terhubung, munculkan dialog untuk mengarahkan pengguna
-            new AlertDialog.Builder(context)
-                .setTitle("Koneksi Hotspot")
-                .setMessage("Perangkat Anda belum terhubung ke hotspot \"" + hotspotSSID + 
-                    "\". Silakan hubungkan terlebih dahulu melalui pengaturan Wi-Fi.")
-                .setCancelable(false)
-                .setPositiveButton("Buka Pengaturan", (dialog, id) -> {
-                    // Arahkan pengguna ke pengaturan Wi-Fi
-                    context.startActivity(new Intent(android.provider.Settings.ACTION_WIFI_SETTINGS));
-                })
-                .setNegativeButton("Batal", (dialog, id) -> dialog.dismiss())
-                .show();
-        } else {
-            Toast.makeText(context, 
-                "Perangkat Anda sudah terhubung ke hotspot \"" + hotspotSSID + "\".", 
-                Toast.LENGTH_SHORT).show();
+    // Fungsi untuk mengirim data ke server
+    public void sendData(String message) {
+        try {
+            if (outputStream != null) {
+                outputStream.write(message.getBytes());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
+
+    // Fungsi untuk menerima data dari server
+    public String receiveData() {
+        StringBuilder data = new StringBuilder();
+        try {
+            if (inputStream != null) {
+                int character;
+                while ((character = inputStream.read()) != -1) {
+                    data.append((char) character);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return data.toString();
     }
 }
