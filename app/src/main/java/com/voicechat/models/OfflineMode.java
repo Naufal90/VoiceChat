@@ -18,6 +18,11 @@ public class OfflineMode {
     private Socket clientSocket;
     private InputStream inputStream;
     private OutputStream outputStream;
+    private Activity activity;
+
+public OfflineMode(Activity activity) {
+    this.activity = activity;
+}
 
     public OfflineMode(Context context) {
         this.context = context;
