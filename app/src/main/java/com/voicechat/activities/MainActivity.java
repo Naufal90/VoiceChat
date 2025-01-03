@@ -85,11 +85,6 @@ public class MainActivity extends AppCompatActivity {
         VpnMode vpnMode = new VpnMode(getApplicationContext());
 vpnMode.checkVpnConnection();
 
-        // Memeriksa koneksi ke hotspot
-        String hotspotSSID = "NamaHotspot";
-        clientMode.verifyConnection(hotspotSSID);
-        clientMode.connectToHotspot(hotspotSSID);
-
         // Mengirim data ke plugin
         String serverUrl = "http://example.com/plugin-endpoint";
         String command = "{ \"action\": \"start\" }";
