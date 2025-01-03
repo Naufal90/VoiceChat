@@ -23,10 +23,12 @@ import com.voicechat.managers.MyAudioManager;
 import com.voicechat.managers.ProximitySensor;
 import com.voicechat.managers.VoiceModeHandler;
 import com.voicechat.services.MyVpnService;
-import com.voicechat.utils.AudioUtils;
 import com.voicechat.utils.NetworkUtils;
 import com.voicechat.utils.PermissionUtils;
 import com.voicechat.utils.ToastUtils;
+import com.voicechat.sound.AudioPlayer;
+import com.voicechat.sound.AudioRecorder;
+import com.voicechat.sound.SoundManager;
 
 import android.net.wifi.WifiManager;
 import android.content.Context;
@@ -58,8 +60,9 @@ public class MainActivity extends AppCompatActivity {
     private AdView mAdView;
     private boolean isRecording = false;
 
-    private MediaRecorder recorder;
-    private MediaPlayer player;
+    private AudioRecorder audioRecorder;
+    private AudioPlayer audioPlayer;
+    private SoundManager soundManager;
 
     private LogWriter logWriter;
 
@@ -132,6 +135,11 @@ vpnMode.checkVpnConnection();
         // Inisialisasi UI
         initUI();
 
+            // Inisialisasi
+        audioRecorder = new AudioRecorder(AUDIO_FILE_PATH);
+        audioPlayer = new AudioPlayer();
+        soundManager = new SoundManager(this, R.raw.sample_audio); // Pastikan file ada di res/raw
+
         // Set toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -149,10 +157,10 @@ vpnMode.checkVpnConnection();
         etServerUrl = findViewById(R.id.etServerUrl);
         etCommand = findViewById(R.id.etCommand);
 
-        recordButton.setOnClickListener(v -> startRecording());
-        stopRecordButton.setOnClickListener(v -> stopRecording());
-        playButton.setOnClickListener(v -> startPlaying());
-        stopPlayButton.setOnClickListener(v -> stopPlaying());
+        recordButton.setOnClickListener(v -> audioRecorder.startRecording());
+        stopRecordButton.setOnClickListener(v -> audioRecorder.stopRecording());
+        playButton.setOnClickListener(v -> audioPlayer.play(AUDIO_FILE_PATH));
+        stopPlayButton.setOnClickListener(v -> audioPlayer.stop());
         sendButton.setOnClickListener(v -> sendCommand());
     }
 
@@ -171,21 +179,27 @@ public void onRequestPermissionsResult(int requestCode, String[] permissions, in
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        logWriter.writeLog("Aplikasi Dihentikan");
+protected void onDestroy() {
+    super.onDestroy();
+    logWriter.writeLog("Aplikasi Dihentikan");
 
-        // Pastikan untuk melepaskan resource recorder dan player
-        if (mediaRecorder != null) {
-        mediaRecorder.release();
-        mediaRecorder = null;
+    // Pastikan untuk melepaskan resource AudioRecorder dan AudioPlayer
+    if (audioRecorder != null) {
+        audioRecorder.release();
+        audioRecorder = null;
     }
 
-        if (player != null) {
-            player.release();
-            player = null;
-        }
+    if (audioPlayer != null) {
+        audioPlayer.release();
+        audioPlayer = null;
     }
+
+    // Jika SoundManager juga digunakan
+    if (soundManager != null) {
+        soundManager.release();
+        soundManager = null;
+    }
+}
 
     private void startRecording() {
     try {
@@ -196,73 +210,65 @@ public void onRequestPermissionsResult(int requestCode, String[] permissions, in
             return;
         }
 
-        // Inisialisasi recorder
-        recorder = new MediaRecorder();
-        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-        recorder.setOutputFile(AUDIO_FILE_PATH);
+        String audioFilePath = new File(folder, "recording.3gp").getAbsolutePath();
 
-        // Menyiapkan recorder
-        recorder.prepare();
-        recorder.start();
-        showSuccessToast("Perekaman dimulai");
+        // Inisialisasi AudioRecorder
+        audioRecorder = new AudioRecorder(audioFilePath);
+        audioRecorder.startRecording();
+    private void startPlaying() {
+    File audioFile = new File(getExternalFilesDir(null), "VoiceChat/recording.3gp");
+    if (!audioFile.exists()) {
+        Toast.makeText(this, "File audio tidak ditemukan", Toast.LENGTH_SHORT).show();
+        return;
+    }
+
+    if (audioPlayer != null) {
+        audioPlayer.stop();
+        audioPlayer.release();
+    }
+
+    try {
+        // Inisialisasi AudioPlayer
+        audioPlayer = new AudioPlayer(audioFile.getAbsolutePath());
+        audioPlayer.startPlaying();
+        showSuccessToast("Pemutaran dimulai");
+    } catch (IOException e) {
+        e.printStackTrace();
+        showErrorToast("Gagal memutar audio");
+    }
+}
+
+private void stopPlaying() {
+    if (audioPlayer != null) {
+        audioPlayer.stopPlaying();
+        audioPlayer.release();
+        audioPlayer = null;
+        showSuccessToast("Pemutaran dihentikan");
+    }
+}    showSuccessToast("Perekaman dimulai");
 
     } catch (IOException e) {
         e.printStackTrace();
         showErrorToast("Gagal memulai perekaman");
     } catch (IllegalStateException e) {
         e.printStackTrace();
-        showErrorToast("Perekaman sudah dimulai atau dalam kondisi tidak valid");
+        showErrorToast("Perekaman dalam kondisi tidak valid");
     }
 }
 
 private void stopRecording() {
-    if (recorder != null) {
+    if (audioRecorder != null) {
         try {
-            recorder.stop();  // Berhenti merekam
+            audioRecorder.stopRecording(); // Berhenti merekam
+            showSuccessToast("Perekaman dihentikan");
         } catch (IllegalStateException e) {
             e.printStackTrace();
             showErrorToast("Perekaman tidak dapat dihentikan karena status tidak valid");
         }
-        recorder.release();  // Melepaskan resource
-        recorder = null;     // Null-kan recorder setelah selesai
-        showSuccessToast("Perekaman dihentikan");
+        audioRecorder.release(); // Melepaskan resource
+        audioRecorder = null;    // Null-kan recorder setelah selesai
     }
 }
-
-    private void startPlaying() {
-        File audioFile = new File(AUDIO_FILE_PATH);
-        if (!audioFile.exists()) {
-            Toast.makeText(this, "File audio tidak ditemukan", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (player != null) {
-            player.stop();
-            player.release();
-        }
-
-        player = new MediaPlayer();
-        try {
-            player.setDataSource(audioFile.getAbsolutePath());
-            player.prepare();
-            player.start();
-            showSuccessToast("Pemutaran dimulai");
-        } catch (IOException e) {
-            e.printStackTrace();
-            showErrorToast("Gagal memutar audio");
-        }
-    }
-
-    private void stopPlaying() {
-        if (player != null) {
-            player.stop();
-            player.release();
-            player = null;
-            showSuccessToast("Pemutaran dihentikan");
-        }
-    }
 
     private void sendCommand() {
         // Implementasi pengiriman perintah ke plugin atau server
