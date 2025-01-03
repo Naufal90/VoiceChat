@@ -1,5 +1,14 @@
 package com.voicechat.sound;
 
+import android.media.AudioFormat;
+import android.media.AudioRecord;
+import android.media.MediaRecorder;
+
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+
 public class AudioRecorder {
     private AudioRecord audioRecord;
     private int bufferSize;
@@ -8,6 +17,7 @@ public class AudioRecorder {
     private DatagramSocket socket;
     private InetAddress serverAddress;
     private int serverPort;
+    private boolean isRecording;
 
     public AudioRecorder(InetAddress serverAddress, int serverPort) {
         this.serverAddress = serverAddress;
@@ -45,9 +55,10 @@ public class AudioRecorder {
 
     // Mulai perekaman dan pengiriman data audio
     public void startRecording() {
+        isRecording = true;
         audioRecord.startRecording();
         new Thread(() -> {
-            while (true) {
+            while (isRecording) {
                 int read = audioRecord.read(audioBuffer, 0, bufferSize);
                 if (read > 0) {
                     sendAudioDataToServer(audioBuffer);
@@ -68,10 +79,14 @@ public class AudioRecorder {
 
     // Stop perekaman
     public void stopRecording() {
+        isRecording = false;
         if (audioRecord != null) {
             audioRecord.stop();
             audioRecord.release();
             audioRecord = null;
         }
+        if (socket != null && !socket.isClosed()) {
+            socket.close();
+        }
     }
-}￼Enter
+}
