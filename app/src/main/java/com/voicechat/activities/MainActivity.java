@@ -141,7 +141,7 @@ protected void onCreate(Bundle savedInstanceState) {
 
     // Inisialisasi audio
     audioRecorder = new AudioRecorder(AUDIO_FILE_PATH);
-    audioPlayer = new AudioPlayer();
+    audioPlayer = new AudioPlayer(audioFile.getAbsolutePath());
     soundManager = new SoundManager(this, R.raw.sample_audio); // Pastikan file ada di res/raw
 
     // Set toolbar
