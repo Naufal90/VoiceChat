@@ -176,7 +176,6 @@ protected void onCreate(Bundle savedInstanceState) {
         startHotspotButton = findViewById(R.id.startHotspotButton);
         connectButton = findViewById(R.id.connectButton);
         commandEditText = findViewById(R.id.commandEditText);
-        etServerUrl = findViewById(R.id.etServerUrl);
         etCommand = findViewById(R.id.etCommand);
 
         recordButton.setOnClickListener(v -> audioRecorder.startRecording());
@@ -319,25 +318,6 @@ private void stopRecording() {
         audioRecorder = null;    // Null-kan recorder setelah selesai
     }
 }
-
-    private void sendCommand() {
-    String serverUrl = etServerUrl.getText().toString().trim();
-    String command = etCommand.getText().toString().trim();
-
-    if (serverUrl.isEmpty() || command.isEmpty()) {
-        showErrorToast("URL server dan perintah tidak boleh kosong");
-        return;
-    }
-
-    pluginMode.sendDataToPlugin(serverUrl, command);
-    showSuccessToast("Perintah dikirim");
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_help, menu);
-        return true;
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
