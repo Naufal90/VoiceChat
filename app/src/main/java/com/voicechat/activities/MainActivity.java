@@ -46,7 +46,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String AUDIO_FILE_PATH = "/storage/emulated/0/VoiceChat/audio_file.3gp";
+    private static final String AUDIO_FILE_PATH = new File(getExternalFilesDir(null), "VoiceChat/audio_file.3gp").getAbsolutePath();
     private static final String TAG = "VoiceChat";
 
     private OfflineMode offlineMode;
@@ -67,12 +67,22 @@ public class MainActivity extends AppCompatActivity {
     private LogWriter logWriter;
 
     private void requestStoragePermission() {
-    if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            != PackageManager.PERMISSION_GRANTED) {
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        // Cek apakah aplikasi sudah memiliki akses penuh ke penyimpanan
+        if (!Environment.isExternalStorageManager()) {
+            // Minta izin akses penuh ke penyimpanan
+            Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+            startActivityForResult(intent, 1); // Ganti dengan REQUEST_CODE yang sesuai
+        }
+    } else {
+        // Untuk Android 10 dan lebih rendah, gunakan izin lama
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        }
     }
-    }
+}
 
    @Override
 protected void onCreate(Bundle savedInstanceState) {
@@ -191,20 +201,40 @@ protected void onDestroy() {
 
     private void startRecording() {
     try {
+        // Menentukan folder penyimpanan
         File folder = new File(getExternalFilesDir(null), "VoiceChat");
+
+        // Pastikan folder ada atau coba buat jika belum ada
         if (!folder.exists() && !folder.mkdirs()) {
             showErrorToast("Gagal membuat folder untuk menyimpan audio");
             return;
         }
 
+        // Menentukan path file audio
         String audioFilePath = new File(folder, "recording.3gp").getAbsolutePath();
+
+        // Memastikan audioRecorder tidak sedang dalam kondisi perekaman
+        if (audioRecorder != null && isRecording) {
+            showErrorToast("Perekaman sudah dimulai");
+            return;
+        }
+
+        // Membuat instance baru AudioRecorder
         audioRecorder = new AudioRecorder(audioFilePath);
+
+        // Mulai merekam
         audioRecorder.startRecording();
+        isRecording = true; // Menandakan bahwa perekaman sedang berlangsung
+
+        // Menampilkan toast untuk memberi tahu pengguna bahwa perekaman telah dimulai
         showSuccessToast("Perekaman dimulai");
 
-    } catch (IOException | IllegalStateException e) {
+    } catch (IOException e) {
         e.printStackTrace();
         showErrorToast("Gagal memulai perekaman");
+    } catch (IllegalStateException e) {
+        e.printStackTrace();
+        showErrorToast("Perekaman dalam kondisi tidak valid");
     }
 }
         
