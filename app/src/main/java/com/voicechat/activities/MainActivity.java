@@ -12,6 +12,10 @@ import android.widget.Toast;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.app.AlertDialog;
+import android.os.Build;
+import android.provider.Settings;
+import android.content.Intent;
+import android.os.Environment;
 
 import com.voicechat.R;
 import com.voicechat.models.OfflineMode;
