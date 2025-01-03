@@ -11,19 +11,25 @@ public class ClientMode {
     private InputStream inputStream;
 
     // Fungsi untuk menghubungkan ke host (server)
-    public void connectToServer(String host) {
-        try {
-            socket = new Socket(host, 12345); // Menghubungkan ke host di port 12345
-            outputStream = socket.getOutputStream();
-            inputStream = socket.getInputStream();
-            System.out.println("Terhubung ke server.");
+    public void connectToServer(final String host) {
+    // Gunakan thread terpisah untuk menjalankan operasi jaringan
+    new Thread(new Runnable() {
+        @Override
+        public void run() {
+            try {
+                socket = new Socket(host, 12345); // Menghubungkan ke host di port 12345
+                outputStream = socket.getOutputStream();
+                inputStream = socket.getInputStream();
+                System.out.println("Terhubung ke server.");
 
-            // Komunikasi antara client dan host bisa dimulai di sini
-            // Misalnya, mengirim data ke server atau menerima data
-        } catch (IOException e) {
-            e.printStackTrace();
+                // Komunikasi antara client dan host bisa dimulai di sini
+                // Misalnya, mengirim data ke server atau menerima data
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-    }
+    }).start();
+}
 
     // Fungsi untuk menghentikan koneksi
     public void disconnect() {
