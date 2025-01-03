@@ -74,67 +74,65 @@ public class MainActivity extends AppCompatActivity {
     }
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+   @Override
+protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
 
-        requestStoragePermission();
-    }
+    requestStoragePermission();
 
-        // Memeriksa apakah izin yang diperlukan sudah diberikan
+    // Memeriksa apakah izin yang diperlukan sudah diberikan
     if (!PermissionUtils.isPermissionGranted(this)) {
-            PermissionUtils.requestPermissions(this);
+        PermissionUtils.requestPermissions(this);
     }
 
-        offlineMode = new OfflineMode(MainActivity.this);
-        clientMode = new ClientMode();
-        PluginMode pluginMode = new PluginMode(this);
+    // Inisialisasi mode
+    offlineMode = new OfflineMode(MainActivity.this);
+    clientMode = new ClientMode();
+    pluginMode = new PluginMode(this);
+    vpnMode = new VpnMode(this);
 
-// Contoh mode dipilih
-String selectedMode = "plugin";
-String serverUrl = "http://your-server-url/plugin-endpoint";
-String command = "{\"action\":\"sendMessage\",\"message\":\"Hello Plugin!\"}";
+    // Contoh mode dipilih
+    String selectedMode = "plugin";
+    String serverUrl = "http://your-server-url/plugin-endpoint";
+    String command = "{\"action\":\"sendMessage\",\"message\":\"Hello Plugin!\"}";
 
-// Memeriksa dan mengirim data ke plugin
-pluginMode.checkPluginMode(selectedMode, serverUrl, command);
-        VpnMode vpnMode = new VpnMode(this);
-vpnMode.checkVPNMode(selectedMode);
-        logWriter = new LogWriter(this);
+    // Memeriksa dan mengirim data ke plugin
+    pluginMode.checkPluginMode(selectedMode, serverUrl, command);
+    vpnMode.checkVPNMode(selectedMode);
 
-        offlineMode.startServer();
+    // Menulis log aplikasi dimulai
+    logWriter = new LogWriter(this);
+    logWriter.writeLog("Aplikasi Dimulai");
 
-        clientMode.connectToServer("alamat_server");
+    // Mulai server offlineMode
+    offlineMode.startServer();
 
-        VpnMode vpnMode = new VpnMode(getApplicationContext());
-vpnMode.checkVpnConnection();
+    // Menghubungkan clientMode ke server
+    clientMode.connectToServer("alamat_server");
 
-        // Mengirim data ke plugin
-        String serverUrl = "http://example.com/plugin-endpoint";
-        String command = "{ \"action\": \"start\" }";
-        pluginMode.sendDataToPlugin(serverUrl, command);
+    // Mengirim data ke plugin
+    pluginMode.sendDataToPlugin(serverUrl, command);
 
-        logWriter.writeLog("Aplikasi Dimulai");
+    // Inisialisasi AdMob
+    MobileAds.initialize(this, initializationStatus -> {});
+    mAdView = findViewById(R.id.adView);
+    AdRequest adRequest = new AdRequest.Builder().build();
+    mAdView.loadAd(adRequest);
 
-        // Inisialisasi AdMob
-        MobileAds.initialize(this, initializationStatus -> {});
-        mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+    // Inisialisasi UI
+    initUI();
 
-        // Inisialisasi UI
-        initUI();
+    // Inisialisasi audio
+    audioRecorder = new AudioRecorder(AUDIO_FILE_PATH);
+    audioPlayer = new AudioPlayer();
+    soundManager = new SoundManager(this, R.raw.sample_audio); // Pastikan file ada di res/raw
 
-            // Inisialisasi
-        audioRecorder = new AudioRecorder(AUDIO_FILE_PATH);
-        audioPlayer = new AudioPlayer();
-        soundManager = new SoundManager(this, R.raw.sample_audio); // Pastikan file ada di res/raw
-
-        // Set toolbar
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-    }
-
+    // Set toolbar
+    Toolbar toolbar = findViewById(R.id.toolbar);
+    setSupportActionBar(toolbar);
+}
+    
     private void initUI() {
         recordButton = findViewById(R.id.recordButton);
         stopRecordButton = findViewById(R.id.stopRecordButton);
