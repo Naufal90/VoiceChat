@@ -41,6 +41,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
 
 import java.io.File;
 import java.io.IOException;
@@ -129,6 +130,7 @@ protected void onCreate(Bundle savedInstanceState) {
     mAdView = findViewById(R.id.adView);
     AdRequest adRequest = new AdRequest.Builder().build();
     mAdView.loadAd(adRequest);
+    initializeAdMob();
 
     // Inisialisasi UI
     initUI();
@@ -353,5 +355,19 @@ private void stopRecording() {
                            "Semoga panduan ini membantu Anda dalam menggunakan aplikasi Voice Chat. Selamat mencoba!")
                .setPositiveButton("OK", null)
                .show();
+    }
+}
+
+// Metode untuk menginisialisasi AdMob
+    public void initializeAdMob() {
+        MobileAds.initialize(this, initializationStatus -> {
+            if (initializationStatus.getInitializationState() == InitializationStatus.InitializationState.FAILURE) {
+                // Penanganan jika inisialisasi AdMob gagal
+                showErrorToast("Gagal menginisialisasi AdMob");
+            } else {
+                // Penanganan jika inisialisasi berhasil
+                showSuccessToast("AdMob berhasil diinisialisasi");
+            }
+        });
     }
 }
