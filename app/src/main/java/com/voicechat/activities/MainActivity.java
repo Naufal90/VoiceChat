@@ -52,10 +52,11 @@ public class MainActivity extends AppCompatActivity {
     private PluginMode pluginMode;
     private VpnMode vpnMode;
 
-    private Button recordButton, stopRecordButton, playButton, stopPlayButton, sendButton, startHotspotButton, connectButton;
+    private Button startStopButton, recordButton, stopRecordButton, playButton, stopPlayButton, sendButton, startHotspotButton, connectButton;
     private EditText etServerUrl, etCommand;
     private EditText commandEditText;
     private AdView mAdView;
+    private boolean isRecording = false;
 
     private MediaRecorder recorder;
     private MediaPlayer player;
@@ -118,6 +119,16 @@ vpnMode.checkVpnConnection();
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
+        startStopButton = findViewById(R.id.startStopButton);
+            startStopButton.setOnClickListener(v -> {
+            if (isRecording) {
+                stopRecording(); // Jika sedang merekam, hentikan
+            } else {
+                startRecording(); // Jika tidak merekam, mulai rekaman
+            }
+        });
+}
+
         // Inisialisasi UI
         initUI();
 
@@ -165,10 +176,10 @@ public void onRequestPermissionsResult(int requestCode, String[] permissions, in
         logWriter.writeLog("Aplikasi Dihentikan");
 
         // Pastikan untuk melepaskan resource recorder dan player
-        if (recorder != null) {
-            recorder.release();
-            recorder = null;
-        }
+        if (mediaRecorder != null) {
+        mediaRecorder.release();
+        mediaRecorder = null;
+    }
 
         if (player != null) {
             player.release();
@@ -177,36 +188,48 @@ public void onRequestPermissionsResult(int requestCode, String[] permissions, in
     }
 
     private void startRecording() {
+    try {
+        // Membuat folder jika belum ada
+        File folder = new File(getExternalFilesDir(null), "VoiceChat");
+        if (!folder.exists() && !folder.mkdirs()) {
+            showErrorToast("Gagal membuat folder untuk menyimpan audio");
+            return;
+        }
+
+        // Inisialisasi recorder
+        recorder = new MediaRecorder();
+        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        recorder.setOutputFile(AUDIO_FILE_PATH);
+
+        // Menyiapkan recorder
+        recorder.prepare();
+        recorder.start();
+        showSuccessToast("Perekaman dimulai");
+
+    } catch (IOException e) {
+        e.printStackTrace();
+        showErrorToast("Gagal memulai perekaman");
+    } catch (IllegalStateException e) {
+        e.printStackTrace();
+        showErrorToast("Perekaman sudah dimulai atau dalam kondisi tidak valid");
+    }
+}
+
+private void stopRecording() {
+    if (recorder != null) {
         try {
-            File folder = new File(getExternalFilesDir(null), "VoiceChat");
-            if (!folder.exists() && !folder.mkdirs()) {
-                showErrorToast("Gagal membuat folder untuk menyimpan audio");
-                return;
-            }
-
-            recorder = new MediaRecorder();
-            recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-            recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-            recorder.setOutputFile(AUDIO_FILE_PATH);
-
-            recorder.prepare();
-            recorder.start();
-            showSuccessToast("Perekaman dimulai");
-        } catch (IOException e) {
+            recorder.stop();  // Berhenti merekam
+        } catch (IllegalStateException e) {
             e.printStackTrace();
-            showErrorToast("Gagal memulai perekaman");
+            showErrorToast("Perekaman tidak dapat dihentikan karena status tidak valid");
         }
+        recorder.release();  // Melepaskan resource
+        recorder = null;     // Null-kan recorder setelah selesai
+        showSuccessToast("Perekaman dihentikan");
     }
-
-    private void stopRecording() {
-        if (recorder != null) {
-            recorder.stop();
-            recorder.release();
-            recorder = null;
-            showSuccessToast("Perekaman dihentikan");
-        }
-    }
+}
 
     private void startPlaying() {
         File audioFile = new File(AUDIO_FILE_PATH);
