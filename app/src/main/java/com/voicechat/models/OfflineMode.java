@@ -8,9 +8,20 @@ import java.net.Socket;
 
 public class OfflineMode {
     private ServerSocket serverSocket;
+    private Context context;
     private Socket clientSocket;
     private InputStream inputStream;
     private OutputStream outputStream;
+
+    public OfflineMode(Context context) {
+        this.context = context;
+    }
+
+    // Kemudian gunakan Toast di dalam metode
+    public void showToast(String message) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    }
+}
 
     // Fungsi untuk memulai server dan mendengarkan koneksi client
     public void startServer() {
