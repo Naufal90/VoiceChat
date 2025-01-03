@@ -127,7 +127,8 @@ protected void onCreate(Bundle savedInstanceState) {
 
         // Mengirim data ke plugin
         String command = "{\"action\":\"sendMessage\",\"message\":\"Hello Plugin!\"}";
-        pluginMode.sendDataToPlugin(serverUrl, command); 
+        pluginMode.sendDataToPlugin(serverUrl, command);
+        }
     // Jika mode offline atau vpn, gunakan deteksi otomatis
         } else {
         if (selectedMode.equals("offline")) {
