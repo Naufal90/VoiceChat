@@ -40,7 +40,7 @@
             android:screenOrientation="portrait"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
+            android:theme="@style/Theme.VoiceChat"
             android:exported="true">
             
             <intent-filter>
