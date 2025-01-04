@@ -101,6 +101,12 @@ protected void onCreate(Bundle savedInstanceState) {
         PermissionUtils.requestPermissions(this);
     }
 
+    @Override
+public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    PermissionUtils.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
     // Inisialisasi mode
     offlineMode = new OfflineMode(MainActivity.this);
     clientMode = new ClientMode();
@@ -186,12 +192,6 @@ protected void onCreate(Bundle savedInstanceState) {
         stopPlayButton.setOnClickListener(v -> audioPlayer.stop());
         sendButton.setOnClickListener(v -> sendCommand());
     }
-}
-
-    @Override
-public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    PermissionUtils.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
 }
 
     private void showSuccessToast(String message) {
